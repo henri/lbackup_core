@@ -1,0 +1,1 @@
+/usr/local/libexec/lbackup/utilities/initialization_scripts/darwin/initialize_disk_image_pre_and_post_hooks.bash

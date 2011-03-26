@@ -1,0 +1,46 @@
+
+Development Options
+
+Verification of data. 
+
+Tool to carry out tree pruning and removal
+
+Also see the website for more things which are on the drawing board for LBackup.
+
+It would be great to have a better way to deal with various operating systems. LSync is probably a good model as this was designed to deal with multiple operating systems.
+
+Rsync paths for various operating systems could be stored in a file in /etc/, the in the backup directory or in the configuration directory?
+
+Fix some of the spelling mistakes in the code. Re-factor the code, it is a mess at the moment.
+
+Automate Internal Update Process Distribution ( IE : Scripts (part of install)
+should automatically update depending upon the version being installed.
+
+SSH port number support
+(not high priority due to the ssh config file)
+
+SSH key specification support 
+(not high priority due to the ssh config file)
+
+Build Better Configuration File System
+    further configuration file architecture
+    further configuration file implementation
+
+Finish Installer : with new install locations : 
+
+FROM : INSTALL LOCATIONS FILE : 
+InstallBinary into >  /usr/local/libexec/
+                                    Executiles Folder:  lbackup1001/
+                                                        lbackup1 > backup1001
+                                                        lbackup > lbackup1
+                                                        
+Link for Execution  into > /usr/local/sbin/
+                    lbackup > /usr/local/libexec/lbackup/lbackup.bash
+
+
+///////////////////////////////////////////////////////////////////////////
+This Installer is going to have to unlink previous versions and re-link the current version.
+
+
+    
+    
