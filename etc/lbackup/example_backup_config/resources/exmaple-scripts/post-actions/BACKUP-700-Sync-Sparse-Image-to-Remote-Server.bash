@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##     Sync Sparse Disk Image to Remote Server      ##
 ##      	           (C)2005		                ##
 ##						                            ##
-##		            Version 0.1.1 	                ##
+##		            Version 0.1.2 	                ##
 ##                                                  ##
 ##            Developed by Henri Shustak            ##
 ##                                                  ##
@@ -51,8 +51,8 @@ local_sparse_bundle_to_sync="/path/to/my_backup.sparsebundle"
 remote_sparse_bundle_destination="/backups/"
 remote_server_address="myremotesshserver.mydomain.com"
 remote_server_user="mrbackup"
-path_to_rsync="/usr/local/bin/rsync_v3.0.6"
-remote_path_to_rsync="/usr/local/bin/rsync_v3.0.6"
+path_to_rsync="/usr/local/bin/rsync_v3.0.7"
+remote_path_to_rsync="/usr/local/bin/rsync_v3.0.7"
 
 ## SSH Run As Other User Settings
 # leave these blank for the user who executes the script.
@@ -144,13 +144,13 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     
     if [ "${remote_system_kind}" == "Darwin" ] ; then
         # Command if remote system is Darwin (with rsync patch)
-        rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aNHAXEx --delete --protect-args --fileflags --force-change \"${local_sparse_bundle_to_sync}\" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"
+        export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aNHAXEx --delete --protect-args --fileflags --force-change ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"
     fi
     
     if [ "${remote_system_kind}" == "Linux" ] ; then
         # Command if remote system is Linux
         #rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete \"${local_sparse_bundle_to_sync}\" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"  
-        rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete \"${local_sparse_bundle_to_sync}\" \"${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}\" 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"  
+        export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"  
         #${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete "${local_sparse_bundle_to_sync}" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}
     fi
     
@@ -160,12 +160,13 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     fi
     
     if [ "${run_sync_as}" == "" ] ; then
-        ${path_to_bash} << EOF 
-${rsync_command}
-EOF
+	${rsync_command} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}
+	exit ${PIPESTATUS[0]}
+    fi
+
         rsync_return_value=$?
     else
-        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command} ; ${rsync_command}"
+        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command} ; ${rsync_command} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"
         rsync_return_value=$?
     fi
 
