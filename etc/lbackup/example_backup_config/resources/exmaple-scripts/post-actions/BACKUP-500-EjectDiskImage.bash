@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##	          EJECT DISK IMAGE VOLUME		    ##
 ##      		     (C)2005		            ##
 ##						                        ##
-##		          Version 0.0.6 	            ##
+##		          Version 0.0.7 	            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -32,7 +32,9 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 #  to preform the unmount.
 #  
 #  Note : This Script Requires Mac OS 10.4 or later
-#
+#         Possibly worth while adding a function which supports other
+#         eject / unmount meathods. This would make the script
+#         more generic.
 
 
 #

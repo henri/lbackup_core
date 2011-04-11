@@ -8,11 +8,12 @@
 # mount and unmount a disk image. Pass in the path to the disk image
 # as the first argument.
 
-# Version 1.1
+# Version 1.2
 #
 # Version History 
 # 1.0 : Initial Release
 # 1.1 : Stops the script from being exectued within the example example_backup_config
+# 1.2 : Added in some basic comments to the header of this script  packages to this script
 
 # TO DO : (1) Add a function to convert realitve paths to actual paths possibly 
 #         by changing directory and then using the pwd command?
@@ -20,6 +21,12 @@
 #         (2) Additional testing of this script in various situations.
 #         to determin when it breaks.
 
+#
+# This script is designed to work with the Mac OS X built in disk image framworks
+# For details on creating disk images please refer to the manual page for hdiutil
+# eg.  (1) open the manual page                           :  man hdiutil
+#      (2) create 100MB sparsebundle image (unencrypted)  :  hdiutil create -size 100m -type SPARSEBUNDLE -fs HFS+J -volname backup_image /tmp/my_100MB_backup_image.sparsebundle
+#      (3) create 100MB sparsebundle image (encrypted)    :  hdiutil create -encryption AES-256 -size 100m -type SPARSEBUNDLE -fs HFS+J -volname backup_image /tmp/my_100MB_backup_encrypted_image.sparsebundle
 
 #
 # This script is part of the LBackup project
@@ -274,6 +281,12 @@ echo "http://www.lbackup.org/permissions"
 echo ""
 echo "Provided it is mounted, the following command should enable permissions on the destination"
 echo "backup volume : sudo vsdbutil -a \"${volume_mount_name}\""
+echo ""
+echo "Listed below are the basic commands for mounting and un-mounting the disk image :"
+# This section needs to be reviewd. Perhaps specifing the devname : eg /dev/disk5 would be bettter?
+# In order to achvie this we will need to retrive this informaiton earlier within the script.
+echo "Mount this disk image     : hdiutil attach \"${relative_path_to_disk_image}\""
+echo "Un-mount this disk image  : hdiutil detach \"${volume_mount_name}\""
 echo ""
 echo "------------------------------------------------------------------------------------------"
 echo ""
