@@ -1,4 +1,4 @@
-# lbackup_core_#
+# lbackup_core #
 
 LBackup is an open source (GNU GPL) backup system, aimed at systems administrators who demand reliable backups.
 
