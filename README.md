@@ -1,6 +1,16 @@
 # lbackup_core #
 
+<h1><img src="http://www.lbackup.org/_media/golden_safe.jpg" valign="middle"/></h1>
+
+About
+--------
+
 LBackup is an open source (GNU GPL) backup system, aimed at systems administrators who demand reliable backups.
+
+License: [GNU General Public License v3][5]
+
+Additional Information
+---------
 
 Further information including basic and more advanced usage is available from the following URL: 
 <http://www.lbackup.org>
