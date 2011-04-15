@@ -7,7 +7,7 @@ About
 
 LBackup is an open source (GNU GPL) backup system, aimed at systems administrators who demand reliable backups.
 
-License: [GNU General Public License v3][5]
+License: [GNU General Public License v3][1]
 
 Additional Information
 ---------
@@ -21,4 +21,6 @@ If you wish to build an OS X package installer then the following project will b
 Instructions for installing directly from source are available from the following URL : 
 <http://www.lbackup.org/source>
 
+
+  [1]: http://www.gnu.org/licenses/gpl.html
 
