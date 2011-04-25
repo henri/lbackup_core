@@ -18,6 +18,9 @@ Further information including basic and more advanced usage is available from th
 If you wish to build an OS X package installer then the following project will be of interest : 
 <http://www.github.com/henri/lbackup_install_osx>
 
+If you wish to build a .deb installer for use on debian based operating systems then the following project will be of interest : 
+<http://www.github.com/henri/lbackup_install_debian>
+
 Instructions for installing directly from source are available from the following URL : 
 <http://www.lbackup.org/source>
 
