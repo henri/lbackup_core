@@ -1,7 +1,7 @@
 
 
     LBACKUP - VERSION HISTORY 
-    ©2001-2010 ALL RIGHTS RESERVED - LUCID INFORMATION SYSTEMS
+    ©2001-2011 ALL RIGHTS RESERVED - LUCID INFORMATION SYSTEMS
     www.lucidsystems.org
 
     -----------------------------------------------------
@@ -11,10 +11,15 @@
 
 	Version 0.9.8r5
   
+		Added an additional example post action script
+		which provides basic template for reporting
+		relating to the differences between snapshot
+		disk utilization.
+
 		Added in the first initialization script
 		which simplifies the setup of backups to disk
 		images by generating the pre and post actions
-		relating to the mounting and unmounting
+		relating to the mounting and un-mounting
 		of the specified disk image. This is still
 		experimental feature.
 
