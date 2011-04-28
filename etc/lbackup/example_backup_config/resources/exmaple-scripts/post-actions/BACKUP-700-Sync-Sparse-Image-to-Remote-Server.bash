@@ -170,7 +170,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
         rsync_return_value=$?
     fi
 
-    if [ $rsync_return_value != $? ] ; then
+    if [ $rsync_return_value != 0 ] ; then
         echo "    ERROR! : Occurred during disk image sync." | tee -ai $logFile
         echo "             Rsync Exit Value : $rsync_return_value" | tee -ai $logFile
         exit ${SCRIPT_WARNING}
