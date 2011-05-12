@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##     Sync Sparse Disk Image to Remote Server      ##
 ##      	           (C)2005		                ##
 ##						                            ##
-##		            Version 0.1.2 	                ##
+##		            Version 0.1.4 	                ##
 ##                                                  ##
 ##            Developed by Henri Shustak            ##
 ##                                                  ##
@@ -71,11 +71,17 @@ rsync_command=""
 hdiutil_mounted_status=""
 local_system_kind=""
 remote_system_kind=""
+export_ssh_agent_command_with_colon=""
 
 # Preflight Checks 
 if [ "${backup_status}" != "SUCCESS" ] ; then
     echo "    WARNING! : Sparse image synchronization will not continue because the backup has not succeeded." | tee -ai $logFile
     exit ${SCRIPT_WARNING}
+fi
+
+# If there is a value within the export_ssh_agent_command varible then populate the export_ssh_agent_command_with_colon varible
+if [ "${export_ssh_agent_command}" != "" ] ; then
+    export_ssh_agent_command_with_colon="${export_ssh_agent_command} ;"
 fi
 
 # More Internal Checks and varibles
@@ -84,7 +90,7 @@ local_system_kind=`uname`
 if [ "${run_sync_as}" == "" ] ; then
     remote_system_kind=`ssh ${remote_server_user}@${remote_server_address} "uname"`
 else
-    remote_system_kind=`su -l ${run_sync_as} -c "${export_ssh_agent_command} ; ssh ${remote_server_user}@${remote_server_address} \"uname\""`
+    remote_system_kind=`su -l ${run_sync_as} -c "${export_ssh_agent_command_with_colon} ssh ${remote_server_user}@${remote_server_address} \"uname\""`
 fi
 
 
@@ -95,7 +101,7 @@ if [ "${local_system_kind}" == "Darwin" ] && [ "${remote_system_kind}" == "Darwi
         ssh ${remote_server_user}@${remote_server_address} "##--LBackup_Sync_Sparse_Bundel_SSH_Test--## ; exit 0"
         ssh_test_result=$?
     else
-        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command} ; ssh ${remote_server_user}@${remote_server_address} \"##--LBackup_Sync_Sparse_Bundel_SSH_Test--## ; exit 0 \""
+        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command_with_colon} ssh ${remote_server_user}@${remote_server_address} \"##--LBackup_Sync_Sparse_Bundel_SSH_Test--## ; exit 0 \""
         ssh_test_result=$?
     fi
     # Depending how critical this is you may want to halt rather than just warn.
@@ -133,7 +139,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     if [ "${run_sync_as}" == "" ] ; then
         ssh ${remote_server_user}@${remote_server_address} "df -hi" | sed s'/^/        /' | tee -ai $logFile
     else
-        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command} ; ssh ${remote_server_user}@${remote_server_address} \"df -hi\"" | sed s'/^/    /' | tee -ai $logFile
+        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command_with_colon} ssh ${remote_server_user}@${remote_server_address} \"df -hi\"" | sed s'/^/    /' | tee -ai $logFile
     fi
 
     # Wait a moment so you can easily stop this process if you made a mistake.
@@ -153,23 +159,21 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
         export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"  
         #${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete "${local_sparse_bundle_to_sync}" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}
     fi
-    
+
     if [ "${rsync_command}" == "" ] ; then
         echo "    ERROR! : No rsync command specified for this of remote operating system : ${remote_system_kind}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
     
     if [ "${run_sync_as}" == "" ] ; then
-	${rsync_command} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}
-	exit ${PIPESTATUS[0]}
-    fi
-
+	    ${rsync_command} 2>&1 | sed s'/^/    /' | sed s'/^/    /' | tee -ai ${logFile}
+	    exit ${PIPESTATUS[0]}
         rsync_return_value=$?
     else
-        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command} ; ${rsync_command} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"
+        sudo su -l ${run_sync_as} -c "${export_ssh_agent_command_with_colon} ${rsync_command} 2>&1 | sed s'/^/    /' | sed s'/^/    /' | tee -ai ${logFile} ; exit ${PIPESTATUS[0]}"
         rsync_return_value=$?
     fi
-
+    
     if [ $rsync_return_value != 0 ] ; then
         echo "    ERROR! : Occurred during disk image sync." | tee -ai $logFile
         echo "             Rsync Exit Value : $rsync_return_value" | tee -ai $logFile
