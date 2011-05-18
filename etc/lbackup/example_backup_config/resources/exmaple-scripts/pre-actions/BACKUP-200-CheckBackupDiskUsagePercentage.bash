@@ -10,7 +10,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##  Ensure Disk Usage is Bleow a Set Percentage ##
 ##      	         (C)2008                    ##
 ##						                        ##
-##	              Version 0.0.1 	            ##
+##	              Version 0.0.2 	            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -44,6 +44,9 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 # If the disk usage percentage of the backup destiation is at this ammount or higher
 # then the backup will be stoped, provided everything with finding the current disk usage takes palce.
 stop_backup_if_disk_usage_is_at_or_above=80
+
+# Report the disk utilization of the backup disk? (YES/NO)
+report_disk_utilization_of_the_backup_volume="YES"
 
 
 ## Intenral Varibles
@@ -86,6 +89,9 @@ if [ ${backupDestVolume_diskusage_percentage} -ge $stop_backup_if_disk_usage_is_
      echo ""
      exit ${SCRIPT_HALT}
 else
+    if [ "${report_disk_utilization_of_the_backup_volume}" == "YES" ] ; then
+        echo "                Backup volume disk utilization is : ${backupDestVolume_diskusage_percentage}%" | tee -ai $logFile
+    fi
     exit ${SCRIPT_SUCCESS}
 fi
 
