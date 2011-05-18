@@ -11,6 +11,11 @@
 
 	Version 0.9.8r5
   
+		Added an additional example pre action script
+		which provides the ability to perform a check
+		regarding the percentage usage of the
+		destination disk.
+
 		Added an additional example post action script
 		which provides basic template for reporting
 		relating to the differences between snapshot
