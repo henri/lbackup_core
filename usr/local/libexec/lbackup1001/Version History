@@ -10,6 +10,15 @@
 
 
 	Version 0.9.8r5
+
+		Added an additional example pre action script
+		which will inspect the log and determine the
+		start time of the most recent successful 
+		backup. If the start time is less than the
+		time specified within the script then backup
+		will be aborted. If the time is greater than
+		that mentioned in the script then the backup
+		will continue.
   
 		Added an additional example pre action script
 		which provides the ability to perform a check
