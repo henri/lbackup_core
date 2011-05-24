@@ -156,16 +156,13 @@ function check_mailconfigpartner {
         if [ "${mailconfigpartner}" != "" ] ; then 
             local mailconfigpartner_name=`basename $mailconfigpartner`
         else
-            if [ "${disable_mailconfigpartner_missing_varible_warning}" != "YES" ] ; then
-                # Reporting regarding the mail configpartner script has not been disabled so print an WARNING!
-                echo "" | tee -ai $logFile
-                echo "WARNING! : No mail configuration partner specified." | tee -ai $logFile
-                echo "           To specify a mail partner configuration file add the" | tee -ai $logFile
-                echo "           following line into your backup configuration file :" | tee -ai $logFile
-                echo ""  | tee -ai $logFile
-                echo "           mailconfigpartner=nameofyourmailpartner.conf" | tee -ai $logFile
-                echo ""  | tee -ai $logFile
-            fi
+            echo "" | tee -ai $logFile
+            echo "WARNING! : No mail configuration partner specified." | tee -ai $logFile
+            echo "           To specify a mail partner configuration file add the" | tee -ai $logFile
+            echo "           following line into your backup configuration file :" | tee -ai $logFile
+            echo ""  | tee -ai $logFile
+            echo "           mailconfigpartner=nameofyourmailpartner.conf" | tee -ai $logFile
+            echo ""  | tee -ai $logFile
         fi
         mailconfigpartner="${backupConfigurationFolderPath}/${mailconfigpartner_name}"
     fi
@@ -175,13 +172,17 @@ function check_mailconfigpartner {
 # Send Mail Functions  
 # Sends an email out
 function send_mail_log  {
-    check_mailconfigpartner
+    if [ "${disable_mailconfigpartner}" != "YES" ] ; then
+
+        check_mailconfigpartner
     
-    ## Close Log File
-    echo "" >> $logFile
-    echo "" >> $logFile
+        ## Close Log File
+        echo "" >> $logFile
+        echo "" >> $logFile
     
-    bash $currentdir/$mailScriptName "$mailconfigpartner"
+        bash $currentdir/$mailScriptName "$mailconfigpartner"
+        
+    fi
     return 0
 } 
 
@@ -437,8 +438,8 @@ defautl_mailconfigpartner=""
 mailconfigpartner=""
 email_and_archive_log_on_successful_backup=""
 default_email_and_archive_log_on_successful_backup="NO"
-disable_mailconfigpartner_missing_varible_warning=""
-default_disable_mailconfigpartner_missing_varible_warning="NO"
+disable_mailconfigpartner=""
+default_disable_mailconfigpartner="NO"
 
 # source and destination checks
 local_backup_and_source_availibility_checks_enabled=""
@@ -662,9 +663,19 @@ if [ "${report_snapshot_time_seconds}" == "" ] ; then
 fi
 
 # Check if we override the default for reporting missing mail config partner configuration file
-if [ "${disable_mailconfigpartner_missing_varible_warning}" ] ; then
-    disable_mailconfigpartner_missing_varible_warning="$default_disable_mailconfigpartner_missing_varible_warning"
+if [ "${disable_mailconfigpartner}" == "" ] ; then
+    disable_mailconfigpartner="$default_disable_mailconfigpartner"
 fi
+
+if [ "$disable_mailconfigpartner" == "YES" ] && [ "$email_and_archive_log_on_successful_backup" == "YES" ] ; then
+        echo "WARNING! :  Error in the configuration file. Unable to follow configuration instructions." | tee -ai $logFile
+        echo "            The \"email_and_archvie_log_on_sucessful_backup\" option is set to \"YES\"." | tee -ai $logFile
+        echo "            However, the \"disable_mailconfigpartner\" option is also set to \"YES\"." | tee -ai $logFile
+        echo "            The \"disable_mailconfigpartner\" option has been set to \"NO\"." | tee -ai $logFile
+        disable_mailconfigpartner="NO"
+fi
+
+
 
 
 
