@@ -907,7 +907,7 @@ fi
 
 # If the email subsystem has been disabled via the configuration file then att this information to the log.
 if [ "${disable_mailconfigpartner}" == "YES" ] ; then 
-    echo "Email has been disabled within configuration." | tee -ai $logFile
+    echo "Email reporting is disabled." | tee -ai $logFile
 fi
 
 # Wake Client
