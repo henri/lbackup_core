@@ -662,7 +662,7 @@ if [ "${report_snapshot_time_seconds}" == "" ] ; then
   report_snapshot_time_seconds="$default_report_snapshot_time_seconds"
 fi
 
-# Check if we override the default for reporting missing mail config partner configuration file
+# Check if we will disable the email system (no emails will be sent)
 if [ "${disable_mailconfigpartner}" == "" ] ; then
     disable_mailconfigpartner="$default_disable_mailconfigpartner"
 fi
@@ -749,7 +749,7 @@ if [ "${enable_rsync_session_log}" == "YES" ] ; then
 	rsync_session_log_file="${log_dirPath}/${rsync_session_log_name}"
 	test_for_spaces=`echo "${rsync_session_log_file}" | grep " "`
         if [ "${test_for_spaces}" != "" ] ; then
-		echo "WARNING! : Unsupported configuration. The results could be unexpected."
+		echo "WARNING! : Unsupported configuration. The results could be unexpected."
 		echo "           When creating a secondary log file, the path to this log file"
 		echo "           must not contain any spaces"
 	fi
@@ -761,9 +761,9 @@ if [ "${enable_rsync_session_log}" == "YES" ] && [ "${itemize_changes_to_standar
 	change_options="--log-file=${rsync_session_log_file}"
 fi
 if [ "${enable_rsync_session_log}" == "YES" ] && [ "${itemize_changes_to_standard_log}" == "YES" ] ; then
-	echo "WARNING! : Unsupported configuration. The results may be unexpected."
+	echo "WARNING! : Unsupported configuration. The results may be unexpected."
 	echo "           Logging changes to both the primary and secondary log files"
-	echo "           simultaneously is enabled."
+	echo "           simultaneously is enabled."
 	change_options="--itemize-changes --log-file=${rsync_session_log_file}"
 fi
 
@@ -905,6 +905,10 @@ if [ "${number_of_rotations_is_positive_integer}" != "YES" ] ; then
   exit -1
 fi
 
+# If the email subsystem has been disabled via the configuration file then att this information to the log.
+if [ "${disable_mailconfigpartner}" == "YES" ] ; then 
+    echo "Email has been disabled within configuration." | tee -ai $logFile
+fi
 
 # Wake Client
 if [ "$WAKE" == "YES" ] ; then
