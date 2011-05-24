@@ -11,6 +11,10 @@
 
 	Version 0.9.8r5
 
+		Added an option to the configuration file which
+		allows the warning on a missing configuration
+		file to be disabled.
+
 		Added an additional example pre action script
 		which will inspect the log and determine the
 		start time of the most recent successful 

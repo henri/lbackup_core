@@ -40,7 +40,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ## http://wwww.lucidsystems.org
 ##
 ## LBackup Official Home Page is
-## http://www.lucidsystems.org/tools/lbackup
+## http://www.lbackup.org
 ##
 
 
@@ -156,13 +156,16 @@ function check_mailconfigpartner {
         if [ "${mailconfigpartner}" != "" ] ; then 
             local mailconfigpartner_name=`basename $mailconfigpartner`
         else
-            echo "" | tee -ai $logFile
-            echo "WARNING! : No mail configuration partner specified." | tee -ai $logFile
-            echo "           To specify a mail partner configuration file add the" | tee -ai $logFile
-            echo "           following line into your backup configuration file :" | tee -ai $logFile
-            echo ""  | tee -ai $logFile
-            echo "           mailconfigpartner=nameofyourmailpartner.conf" | tee -ai $logFile
-            echo ""  | tee -ai $logFile            
+            if [ "${disable_mailconfigpartner_missing_varible_warning}" != "YES" ] ; then
+                # Reporting regarding the mail configpartner script has not been disabled so print an WARNING!
+                echo "" | tee -ai $logFile
+                echo "WARNING! : No mail configuration partner specified." | tee -ai $logFile
+                echo "           To specify a mail partner configuration file add the" | tee -ai $logFile
+                echo "           following line into your backup configuration file :" | tee -ai $logFile
+                echo ""  | tee -ai $logFile
+                echo "           mailconfigpartner=nameofyourmailpartner.conf" | tee -ai $logFile
+                echo ""  | tee -ai $logFile
+            fi
         fi
         mailconfigpartner="${backupConfigurationFolderPath}/${mailconfigpartner_name}"
     fi
@@ -432,8 +435,10 @@ default_post_actions_on_backup_error="NO"
 # Email Reporting lmail settings.
 defautl_mailconfigpartner=""
 mailconfigpartner=""
-default_email_and_archive_log_on_successful_backup=""
 email_and_archive_log_on_successful_backup=""
+default_email_and_archive_log_on_successful_backup="NO"
+disable_mailconfigpartner_missing_varible_warning=""
+default_disable_mailconfigpartner_missing_varible_warning="NO"
 
 # source and destination checks
 local_backup_and_source_availibility_checks_enabled=""
@@ -481,6 +486,9 @@ report_removal_time_for_incomplete_backup_human_readable=""
 default_report_removal_time_for_incomplete_backup_human_readable="NO"
 report_removal_time_for_incomplete_backup_seconds=""
 report_report_removal_time_for_incomplete_backup_seconds="NO"
+
+
+
 
 ##################################
 ##      Load Configuration      ##
@@ -651,6 +659,11 @@ fi
 # Check if snapshot times will be reported in seconds (machine / easily graphable format)
 if [ "${report_snapshot_time_seconds}" == "" ] ; then
   report_snapshot_time_seconds="$default_report_snapshot_time_seconds"
+fi
+
+# Check if we override the default for reporting missing mail config partner configuration file
+if [ "${disable_mailconfigpartner_missing_varible_warning}" ] ; then
+    disable_mailconfigpartner_missing_varible_warning="$default_disable_mailconfigpartner_missing_varible_warning"
 fi
 
 
