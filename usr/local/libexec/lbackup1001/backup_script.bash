@@ -172,17 +172,19 @@ function check_mailconfigpartner {
 # Send Mail Functions  
 # Sends an email out
 function send_mail_log  {
+    
     if [ "${disable_mailconfigpartner}" != "YES" ] ; then
-
         check_mailconfigpartner
-    
-        ## Close Log File
-        echo "" >> $logFile
-        echo "" >> $logFile
-    
-        bash $currentdir/$mailScriptName "$mailconfigpartner"
-        
     fi
+    
+    ## Close Log File
+    echo "" >> $logFile
+    echo "" >> $logFile
+    
+    if [ "${disable_mailconfigpartner}" != "YES" ] ; then
+        bash $currentdir/$mailScriptName "$mailconfigpartner"
+    fi
+    
     return 0
 } 
 
