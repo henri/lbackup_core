@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##             Version 0.9.8r5-alpha8           ##
+##             Version 0.9.8r5-alpha9           ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -279,65 +279,72 @@ function confirm_backup_integraty {
 # Post Action Functions 
 # Performs the post action scripts
 function perform_post_action_scripts {
-         
-        # Perform Post Action Scripts
-        if [ -s "${backup_post_action}" -a -x "${backup_post_action}" ] ; then
-
-            echo "Checking for Post Action Scripts..."
-
-            # Export Appropriate variables to the scripts
-            export logFile                        # post scripts have the ability to write data to the log file.
-            export rsync_session_log_file         # post scripts may want to reference this file.
-            export backupConfigurationFolderPath  # should have been done previously anyway.
-            export backup_status                  # provides feed back regarding the status of the backup.
-            export backupSource                   # provides the directory we are backing up (carful may be remote).
-            export backupDest                     # provides the directory we are storing the backups (carful may be remote).
-            export rsync_session_log_name         # provides the name of the rsync session log (file may or may not exit)
-            export numRotations                   # number of rotations exported.
+     
+    # Perform Post Action Scripts
+    if [ -s "${backup_post_action}" -a -x "${backup_post_action}" ] ; then
+        
+        echo "Checking for Post Action Scripts..."
+        
+        # Export Appropriate variables to the scripts
+        export logFile                        # post scripts have the ability to write data to the log file.
+        export rsync_session_log_file         # post scripts may want to reference this file.
+        export backupConfigurationFolderPath  # should have been done previously anyway.
+        export backup_status                  # provides feed back regarding the status of the backup.
+        export backupSource                   # provides the directory we are backing up (carful may be remote).
+        export backupDest                     # provides the directory we are storing the backups (carful may be remote).
+        export rsync_session_log_name         # provides the name of the rsync session log (file may or may not exit)
+        export numRotations                   # number of rotations exported.
+        
+        # This is only required for the post action not for the pre action 
+        export pre_backup_script_status       # provides access to the pre status of the pre backup script actions.
+        
+        # Export the SSH information from the configruation file (probably not required)
+        export useSSH
+        export sshSource
+        export sshRemoteUser
+        export sshRemoteServer
+        
+        # Export the Script Return Codes
+        export SCRIPT_SUCCESS
+        export SCRIPT_WARNING
+        export SCRIPT_HALT
+        
+        
+        
+        # Execute the Post Backup Actions (passing all parameters passed to the script)
+        "${backup_post_action}" $*
+        
+        # Store the Exit Value from the Pre Backup Script
+        backup_post_action_exit_value=$?
+        
+        
+        if [ ${backup_post_action_exit_value} != ${SCRIPT_SUCCESS} ] ; then 
             
-            # This is only required for the post action not for the pre action 
-            export pre_backup_script_status       # provides access to the pre status of the pre backup script actions.
-
-            # Export the Script Return Codes
-            export SCRIPT_SUCCESS
-            export SCRIPT_WARNING
-            export SCRIPT_HALT
-
-            # Execute the Post Backup Actions (passing all parameters passed to the script)
-            "${backup_post_action}" $*
-
-            # Store the Exit Value from the Pre Backup Script
-            backup_post_action_exit_value=$?
-
-
-            if [ ${backup_post_action_exit_value} != ${SCRIPT_SUCCESS} ] ; then 
-
-                # Determin weather script errors should be reported ( this will affect backup success status )
-                if [ ${backup_post_action_exit_value} == ${SCRIPT_HALT} ] ; then 
-                    echo 1>&2 "" | tee -ai $logFile
-                    echo 1>&2 "ERROR! : One or more post backup action scripts exited with halt requests. " | tee -ai $logFile
-                    echo 1>&2 "         Backup stopping..." | tee -ai 
-                    echo 1>&2 "" | tee -ai $logFile
-                    backup_status="FIALED"
-                fi
-
-                # Check for Warning exit codes
-                if [ ${backup_post_action_exit_value} == ${SCRIPT_WARNING} ] ; then 
-                    echo 1>&2 "" | tee -ai $logFile
-                    echo 1>&2 "WARNING! : One or more post backup action scripts exited with warnings." | tee -ai $logFile
-                    echo 1>&2 "           Backup continuing..." | tee -ai 
-                    echo 1>&2 "" | tee -ai $logFile
-                else
-
-                    # Report Undefined Exit Value
-                    echo 1>&2 "" | tee -ai $logFile
-                    echo 1>&2 "WARNING! : Undefined post action exit value : ${backup_post_action_exit_value}" | tee -ai $logFile
-                    echo 1>&2 "           Backup continuing..." | tee -ai 
-                    echo 1>&2 "" | tee -ai $logFile
-                fi
+            # Determin weather script errors should be reported ( this will affect backup success status )
+            if [ ${backup_post_action_exit_value} == ${SCRIPT_HALT} ] ; then 
+                echo 1>&2 "" | tee -ai $logFile
+                echo 1>&2 "ERROR! : One or more post backup action scripts exited with halt requests. " | tee -ai $logFile
+                echo 1>&2 "         Backup stopping..." | tee -ai 
+                echo 1>&2 "" | tee -ai $logFile
+                backup_status="FIALED"
+            fi
+            
+            # Check for Warning exit codes
+            if [ ${backup_post_action_exit_value} == ${SCRIPT_WARNING} ] ; then 
+                echo 1>&2 "" | tee -ai $logFile
+                echo 1>&2 "WARNING! : One or more post backup action scripts exited with warnings." | tee -ai $logFile
+                echo 1>&2 "           Backup continuing..." | tee -ai 
+                echo 1>&2 "" | tee -ai $logFile
+            else
+                
+                # Report Undefined Exit Value
+                echo 1>&2 "" | tee -ai $logFile
+                echo 1>&2 "WARNING! : Undefined post action exit value : ${backup_post_action_exit_value}" | tee -ai $logFile
+                echo 1>&2 "           Backup continuing..." | tee -ai 
+                echo 1>&2 "" | tee -ai $logFile
             fi
         fi
-        
+    fi
 }
 
 
@@ -987,6 +994,12 @@ if [ -s "${backup_pre_action}" -a -x "${backup_pre_action}" ] ; then
     export backupDest                     # provides the directory we are storing the backups (carful may be remote)
     export rsync_session_log_name         # provides the name of the rsync session log (file may or may not exit).
     export numRotations                   # number of rotations exported.
+    
+    # Export the SSH information from the configruation file (probably not required)
+    export useSSH
+    export sshSource
+    export sshRemoteUser
+    export sshRemoteServer
     
     # Export the Script Return Codes
     export SCRIPT_SUCCESS
