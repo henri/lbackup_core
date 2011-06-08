@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##     Sync Sparse Disk Image to Remote Server      ##
 ##      	           (C)2005		                ##
 ##						                            ##
-##		            Version 0.1.4 	                ##
+##		            Version 0.1.5 	                ##
 ##                                                  ##
 ##            Developed by Henri Shustak            ##
 ##                                                  ##
@@ -117,12 +117,12 @@ else
     fi
     if [ "${remote_system_kind}" != "Linux" ] ; then
         # Depending how critical this is you may want to halt rather than just warn.
-        echo "    ERROR! : The remote or local system is not a Mac OS X system."  | tee -ai $logFile
+        echo "    WARNING! : The remote or local system is not a Mac OS X system."  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
     if [ "${remote_system_kind}" == "Linux" ] ; then
         # Print something out stating that the server is LINUX
-        echo "    Remote server is Linux..." | tee -ai $logFile
+        echo "    Remote system is Linux..." | tee -ai $logFile
     fi
 fi
 
@@ -161,7 +161,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     fi
 
     if [ "${rsync_command}" == "" ] ; then
-        echo "    ERROR! : No rsync command specified for this of remote operating system : ${remote_system_kind}"  | tee -ai $logFile
+        echo "    WARNING! : No rsync command specified for this of remote operating system : ${remote_system_kind}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
     
@@ -175,8 +175,8 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     fi
     
     if [ $rsync_return_value != 0 ] ; then
-        echo "    ERROR! : Occurred during disk image sync." | tee -ai $logFile
-        echo "             Rsync Exit Value : $rsync_return_value" | tee -ai $logFile
+        echo "    WARNING! : Occurred during disk image sync." | tee -ai $logFile
+        echo "               Rsync Exit Value : $rsync_return_value" | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     else
         echo "    Remote server sparse bundle synchronized." | tee -ai $logFile
@@ -185,10 +185,10 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
 else
     if ! [ -d "${local_sparse_bundle_to_sync}" ] ; then
         # Source image is not availible or is still mounted.
-        echo "    ERROR! : Source image is not available : ${local_sparse_bundle_to_sync}"  | tee -ai $logFile
+        echo "    WARNING! : Source image is not available : ${local_sparse_bundle_to_sync}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     else
-        echo "    ERROR! : The source image is mounted : ${hdiutil_mounted_status}"  | tee -ai $logFile
+        echo "    WARNING! : The source image is mounted : ${hdiutil_mounted_status}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
 fi

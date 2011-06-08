@@ -5,11 +5,21 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 # Released Under The GNU GPL v3
 # Lucid Information Systems 
 # http://www.lucidsystems.org
-
+#
+#
 # This script will use rsync to push an updated copy of a sparse bundle image
 # from the local machine to a remote machine which is accessible from a network mount.
 # It is also possible to use this script to keep an additional copy of your sparse bundle 
 # on the local system in sync.
+#
+#
+# Version 1.1
+#
+# Version history :
+#    1.0 : initial release
+#    1.1 : minor changes to reporting
+#
+#
 
 ## Various settings which you will want to alter before running this script.
 local_sparse_bundle_to_sync="/path/to/my_backup.sparsebundle"
@@ -53,8 +63,8 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     ${path_to_rsync} -aNHAXEx --delete --protect-args --fileflags --force-change "${local_sparse_bundle_to_sync}" "${local_sparse_bundle_destination_dir}" 2>&1 | sed s'/^/    /' | tee -ai ${logFile}
     rsync_return_value=$?
     if [ $rsync_return_value != $? ] ; then
-        echo "    ERROR! : Occurred during disk image sync." | tee -ai $logFile
-        echo "             Rsync Exit Value : $rsync_return_value" | tee -ai $logFile
+        echo "    WARNING! : Occurred during disk image sync." | tee -ai $logFile
+        echo "               Rsync Exit Value : $rsync_return_value" | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     else
         echo "    Sparse bundle synchronized." | tee -ai $logFile
@@ -62,10 +72,10 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
 else
     if ! [ -d "${local_sparse_bundle_to_sync}" ] ; then
         # Source image is not availible or is still mounted.
-        echo "    ERROR! : Source sparse bundle is not available : ${local_sparse_bundle_to_sync}"  | tee -ai $logFile
+        echo "    WARNING! : Source sparse bundle is not available : ${local_sparse_bundle_to_sync}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     else
-        echo "    ERROR! : The source sparse bundle is mounted : ${hdiutil_mounted_status}"  | tee -ai $logFile
+        echo "    WARNING! : The source sparse bundle is mounted : ${hdiutil_mounted_status}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
 fi
