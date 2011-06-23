@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##	          EJECT DISK IMAGE VOLUME		    ##
 ##      		     (C)2005		            ##
 ##						                        ##
-##		          Version 0.0.7 	            ##
+##		          Version 0.0.8 	            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -46,6 +46,9 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 exit_value=${SCRIPT_SUCCESS}
 
+# Meathod to use to eject ("osascript"/"hdiutil")
+eject_meathod="osascript"
+
 function unmount_volumes {
     
     
@@ -66,14 +69,26 @@ function unmount_volumes {
     
         # Eject the mounted volume
         echo "    Ejecting Backup Disk Image..." | tee -ai $logFile
-        osascript -e "${apple_script_command}" | tee -ai $logFile
-        apple_script_exit=$?
-        if [ ${apple_script_exit} != ${SCRIPT_SUCCESS} ] ; then
-            exit ${apple_script_exit}
+        
+        if [ "${eject_meathod}" == "osascript" ] ; then
+            # Use apple script to eject the disk image
+            osascript -e "${apple_script_command}" | tee -ai $logFile
+            apple_script_exit=$?
+                if [ ${apple_script_exit} != ${SCRIPT_SUCCESS} ] ; then
+                    exit ${apple_script_exit}
+                fi
+        else
+            # Use hdiutil to eject the disk image
+            hdiutil detach "/Volumes/${volume_to_unmount}"
+            hdiutil_exit=$?
+            if [ ${hdiutil_exit} != ${SCRIPT_SUCCESS} ] ; then
+                exit ${hdiutil_exit}
+            fi
         fi
         
         # Check the volume was ejected
         sleep 5
+        sync
         if [ -d "/Volumes/${volume_to_unmount}" ] ; then 
             echo "    Unable to Eject Backup Volume : /Volumes/${volume_to_unmount}" | tee -ai $logFile
             exit_value=${SCRIPT_WARNING}
