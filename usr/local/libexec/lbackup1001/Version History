@@ -11,6 +11,10 @@
 
 	Version 0.9.8r5
 
+		Added an additional example pre action script
+		which simply reports the disk usage of the 
+		backup destination disk.	
+
 		Added an option to the configuration file which
 		allows disabling of the email reporting system.
 
