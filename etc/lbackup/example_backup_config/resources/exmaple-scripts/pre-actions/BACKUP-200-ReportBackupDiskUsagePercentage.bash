@@ -82,7 +82,7 @@ function calculate_disk_usage_for_backup_destination_volume {
 calculate_disk_usage_for_backup_destination_volume
 
 # report the disk utilization of the backup volume
-echo "    Backup volume disk utilization is : ${backupDestVolume_diskusage_percentage}%" | tee -ai $logFile
+echo "    Backup volume utilization is : ${backupDestVolume_diskusage_percentage}%" | tee -ai $logFile
 exit ${SCRIPT_SUCCESS}
 
 
