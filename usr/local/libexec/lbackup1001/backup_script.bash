@@ -1034,7 +1034,7 @@ if [ -s "${backup_pre_action}" -a -x "${backup_pre_action}" ] ; then
         fi
         # Check for other exit codes
         if [ ${backup_pre_action_exit_value} == ${SCRIPT_WARNING} ] ; then 
-            echo 1>&2 "WARNING! : Pre Backup Action Resulted in Warning : Backup Continuing..." | tee -ai $logFile
+            echo 1>&2 "WARNING! : One or more pre backup action scripts resulted in warning : backup continuing..." | tee -ai $logFile
         else
             # Report Undefined Exit Value
             echo 1>&2 "WARNING! : Undefined Pre Action Exit Value : ${backup_pre_action_exit_value}" | tee -ai $logFile
