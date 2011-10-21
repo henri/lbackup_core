@@ -37,7 +37,7 @@ version="1.3"
 ##########################
 
 cdateLOCAL=`date`
-cdateGMT=`date -u` 
+cdateGMT=`date -u`
 reportDate="$cdateLOCAL"
 
 ##########################
@@ -59,7 +59,7 @@ echo "X-Lucid-Report: Mail-Error"
 echo ""
 echo "Lucid Backup Report $reportDate"
 echo ""
-echo "$backup_identity" 
+echo "$backup_identity"
 echo "Error occurred during backup report generation."
 echo "$messageContent"
 echo ""

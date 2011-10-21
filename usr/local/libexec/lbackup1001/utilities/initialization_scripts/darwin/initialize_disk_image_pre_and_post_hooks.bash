@@ -4,18 +4,18 @@
 # Lucid Information Systems
 # Licensed under the GNU GPL
 
-# This script will enable a pre and post action which will 
+# This script will enable a pre and post action which will
 # mount and unmount a disk image. Pass in the path to the disk image
 # as the first argument.
 
 # Version 1.2
 #
-# Version History 
+# Version History
 # 1.0 : Initial Release
 # 1.1 : Stops the script from being exectued within the example example_backup_config
 # 1.2 : Added in some basic comments to the header of this script  packages to this script
 
-# TO DO : (1) Add a function to convert realitve paths to actual paths possibly 
+# TO DO : (1) Add a function to convert realitve paths to actual paths possibly
 #         by changing directory and then using the pwd command?
 #
 #         (2) Additional testing of this script in various situations.
@@ -76,12 +76,12 @@ fi
 
 # Check the operating system kind and version
 os_name=`uname`
-if [ "${os_name}" != "Darwin" ] ; then 
+if [ "${os_name}" != "Darwin" ] ; then
     echo "    ERROR! : This script only supports Mac OS X."
     exit -1
 fi
 major_os_release=`uname -r | awk -F "." '{print $1}'`
-if [ ${major_os_release} -le 7 ] ; then 
+if [ ${major_os_release} -le 7 ] ; then
     echo "    ERROR! : This script only supports Mac OS 10.4 and higher."
     exit -1
 fi
@@ -136,7 +136,7 @@ if [ -f "${relative_example_dst_pre_action_mount_disk_image}" ] || [ -f "${relat
 fi
 
 # Check the disk image specified exists
-if ! [ -e "${relative_path_to_disk_image}" ] ; then 
+if ! [ -e "${relative_path_to_disk_image}" ] ; then
     echo "    ERROR!: Unable to locate the specified disk image"
     echo "            \"${relative_path_to_disk_image}\""
 	exit -1
@@ -169,12 +169,12 @@ fi
 cp "${relative_example_src_pre_action_mount_disk_image}" "${relative_example_dst_pre_action_mount_disk_image}"
 if [ $? != 0 ] ; then
     echo "ERROR! : Unable to copy the pre action mount disk image script."
-    exit -1 
+    exit -1
 fi
 cp "${relative_example_src_post_action_unmount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
 if [ $? != 0 ] ; then
     echo "ERROR! : Unable to copy the post action unmount mount disk image script."
-    exit -1 
+    exit -1
 fi
 
 
@@ -189,14 +189,14 @@ tmp_file=`mktemp /tmp/lbackup_initialize_disk_image.XXXXXXXXX`
 
 # Replace the backup volume
 cat "${relative_example_dst_pre_action_mount_disk_image}" | sed 's!backupVolume=\"/Volumes/BackupDrive1\"!backupVolume=\"'${backup_volume}'"!' > "${tmp_file}"
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
     rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the backup volume within the destination script."
     echo "             Editing the backup volume failed."
     exit -1
 fi
 mv "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}"
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
     rm "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the backup volume within the destination script."
     echo "             Moving the edited file back into final destination."
@@ -205,14 +205,14 @@ fi
 
 # Replace the backup volume
 cat "${relative_example_dst_pre_action_mount_disk_image}" | sed 's!imageVolumeName=\"/Volumes/backup_data_image\"!imageVolumeName=\"'${volume_mount_name}'"!' > "${tmp_file}"
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
     rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the image volume name volume within the destination script."
     echo "             Editing the backup volume failed."
     exit -1
 fi
 mv "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}"
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
     rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the image volume name volume within the destination script."
     echo "             Moving the edited file back into final destination."
@@ -221,14 +221,14 @@ fi
 
 # Replace the image location
 cat "${relative_example_dst_pre_action_mount_disk_image}" | sed 's!imageVolumeLocation=\"/Volumes/BackupDrive1/backupimage.sparseimage\"!imageVolumeLocation=\"'${relative_path_to_disk_image}'"!' > "${tmp_file}"
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
     rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the image location within the destination script."
     echo "             Editing the backup volume failed."
     exit -1
 fi
 mv "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}"
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
     rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the image location within the destination script."
     echo "             Moving the edited file back into final destination."
@@ -238,15 +238,15 @@ fi
 ## Edit the basic mount image script
 # Replace the backup volume
 cat "${relative_example_dst_post_action_unmount_disk_image}" | sed 's!volume_to_unmount=\"backup_mount\"!volume_to_unmount=\"'${volume_mount_name_no_pre_volume}'"!' > "${tmp_file}"
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
     rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the backup volume within the destination script."
     echo "             Editing the backup volume failed."
     exit -1
 fi
 mv "${tmp_file}" "${relative_example_dst_post_action_unmount_disk_image}"
-if [ $? != 0 ] ; then 
-    rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}" 
+if [ $? != 0 ] ; then
+    rm -f "${tmp_file}" "${relative_example_dst_pre_action_mount_disk_image}" "${relative_example_dst_post_action_unmount_disk_image}"
     echo "     ERROR!: Unable to set the backup volume within the destination script."
     echo "             Moving the edited file back into final destination."
     exit -1
@@ -299,7 +299,7 @@ echo "  - post-action script :  ${post_action_script_basename}"
 echo ""
 
 
-#notes : 
+#notes :
 # attach options : -owners on
 
 

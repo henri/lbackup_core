@@ -16,32 +16,32 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##        This software is licensed under 	        ##
 ##                  the GNU GPL.                    ##
 ##						                            ##
-##	     The developer of this software	            ## 
+##	     The developer of this software	            ##
 ##    maintains rights as specified in the          ##
 ##   Lucid Terms and Conditions availible from      ##
 ##            www.lucidsystems.org     		        ##
 ##                                                  ##
-######################################################    
+######################################################
 
 
 
 # This script will use rsync to push an updated copy of a sparse bundle image
-# from the local machine to a remote machine. 
-# 
+# from the local machine to a remote machine.
+#
 # This script could easily be modified to pull the backup or move the backup between two servers.
 #
 # This script is also easily condensable into a single line so it can be added concisely to your .profile
 # for easy execution.
 #
-# The script will display progress of each band being copied or deleted during the copy. To disable this 
+# The script will display progress of each band being copied or deleted during the copy. To disable this
 # remove the --progress option when calling rsync.
-# 
+#
 # If you are syncing arcross a link then you will probably want to alter some of the settings.
 #
 # Finally, IT IS VERY IMPORTANT that before you call this script you check the disk image is not mounted.
 # In addition, this script has only been tested between Mac OS X systems. Use it on other operating systems
 # at your own risk.
-# 
+#
 # Do not add spaces etc into any paths. This script will probably break.
 
 
@@ -73,7 +73,7 @@ local_system_kind=""
 remote_system_kind=""
 export_ssh_agent_command_with_colon=""
 
-# Preflight Checks 
+# Preflight Checks
 if [ "${backup_status}" != "SUCCESS" ] ; then
     echo "    WARNING! : Sparse image synchronization will not continue because the backup has not succeeded." | tee -ai $logFile
     exit ${SCRIPT_WARNING}
@@ -132,7 +132,7 @@ fi
 # Okay now we have all the configuration information lets copy / update the sparse bundle.
 
 # Check the image available and is not mounted.
-if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "" ] ; then 
+if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "" ] ; then
 
     # Print some volume statistics for the remote servers root partition.
     echo "    Remote server disk usage statistics for : $remote_server_address "| tee -ai $logFile
@@ -147,16 +147,16 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
 
     # Use rsync to copy / update the remote file
     echo "    Syncing disk image to remote server..." | tee -ai $logFile
-    
+
     if [ "${remote_system_kind}" == "Darwin" ] ; then
         # Command if remote system is Darwin (with rsync patch)
         export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aNHAXEx --delete --protect-args --fileflags --force-change ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"
     fi
-    
+
     if [ "${remote_system_kind}" == "Linux" ] ; then
         # Command if remote system is Linux
-        #rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete \"${local_sparse_bundle_to_sync}\" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"  
-        export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"  
+        #rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete \"${local_sparse_bundle_to_sync}\" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"
+        export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"
         #${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete "${local_sparse_bundle_to_sync}" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}
     fi
 
@@ -164,7 +164,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
         echo "    WARNING! : No rsync command specified for this of remote operating system : ${remote_system_kind}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
-    
+
     if [ "${run_sync_as}" == "" ] ; then
 	    ${rsync_command} 2>&1 | sed s'/^/    /' | sed s'/^/    /' | tee -ai ${logFile}
 	    exit ${PIPESTATUS[0]}
@@ -173,7 +173,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
         sudo su -l ${run_sync_as} -c "${export_ssh_agent_command_with_colon} ${rsync_command} 2>&1 | sed s'/^/    /' | sed s'/^/    /' | tee -ai ${logFile} ; exit ${PIPESTATUS[0]}"
         rsync_return_value=$?
     fi
-    
+
     if [ $rsync_return_value != 0 ] ; then
         echo "    WARNING! : Occurred during disk image sync." | tee -ai $logFile
         echo "               Rsync Exit Value : $rsync_return_value" | tee -ai $logFile

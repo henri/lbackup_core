@@ -16,21 +16,21 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##        This software is licensed under 	    ##
 ##                  the GNU GPL.                ##
 ##						                        ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions available from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################    
+##################################################
 
 
 #
-#  This is a simple script which will use the finder 
+#  This is a simple script which will use the finder
 #  to eject the specified disk. This script requires
-#  applescript and will also require a user to be 
+#  applescript and will also require a user to be
 #  logged in, as it is making a call using appplescript
 #  to preform the unmount.
-#  
+#
 #  Note : This Script Requires Mac OS 10.4 or later
 #         Possibly worth while adding a function which supports other
 #         eject / unmount meathods. This would make the script
@@ -50,26 +50,26 @@ exit_value=${SCRIPT_SUCCESS}
 eject_meathod="osascript"
 
 function unmount_volumes {
-    
-    
+
+
     ################################
     ####    INTERNAL VARIABLES    ###
     ################################
-    
+
     # Set the apple script command
     apple_script_command='tell application "Finder" to eject disk "'${volume_to_unmount}'"'
-    
-    
+
+
     ###############################
     ####     PERFORM ACTION     ###
     ###############################
-    
+
     # Check the Volume is Mounted
-    if [ -d "/Volumes/${volume_to_unmount}" ] ; then 
-    
+    if [ -d "/Volumes/${volume_to_unmount}" ] ; then
+
         # Eject the mounted volume
         echo "    Ejecting Backup Disk Image..." | tee -ai $logFile
-        
+
         if [ "${eject_meathod}" == "osascript" ] ; then
             # Use apple script to eject the disk image
             osascript -e "${apple_script_command}" | tee -ai $logFile
@@ -85,11 +85,11 @@ function unmount_volumes {
                 exit ${hdiutil_exit}
             fi
         fi
-        
+
         # Check the volume was ejected
         sleep 5
         sync
-        if [ -d "/Volumes/${volume_to_unmount}" ] ; then 
+        if [ -d "/Volumes/${volume_to_unmount}" ] ; then
             echo "    Unable to Eject Backup Volume : /Volumes/${volume_to_unmount}" | tee -ai $logFile
             exit_value=${SCRIPT_WARNING}
             # Uncomment line below to prevent other disks from being ejected.
@@ -97,15 +97,15 @@ function unmount_volumes {
         else
             echo "    Volume Ejected : /Volumes/${volume_to_unmount}" | tee -ai $logFile
         fi
-        
+
     else
-        
+
         if [ "${volume_to_unmount}" != "$ssh_mountpoint" ] ; then
             # Report that the volume was not mounted
             echo "    Backup Volume Not Mounted : Unable to Eject : ${volume_to_unmount}" | tee -ai $logFile
             exit ${SCRIPT_WARNING}
         fi
-    
+
     fi
 
 }
@@ -127,7 +127,7 @@ sleep 15
 #sleep 15
 
 #ssh_mountpoint="backup_mount_ssh" # Only applies to the SSH mountpoint
-#volume_to_unmount="$ssh_mountpoint" 
+#volume_to_unmount="$ssh_mountpoint"
 #unmount_volumes
 
 

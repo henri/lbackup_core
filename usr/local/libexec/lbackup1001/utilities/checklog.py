@@ -23,7 +23,7 @@ import getopt
 
 ##########################
 ##    Serarch Terms     ##
-##########################    
+##########################
 
 parse1 = 'ERROR!'
 parse2 = 'WARNING!'
@@ -34,7 +34,7 @@ parse2 = 'WARNING!'
 
 ##########################
 ##      Help File       ##
-##########################    
+##########################
 
 
 def usage():
@@ -48,7 +48,7 @@ def usage():
     print "                         LogCheck will output one (1) if ether of"
     print '                         these strings : ' + parse1 + ', ' + parse2 + ' are detected'
     print '                         The output is zero (0) if neither these'
-    print '                         strings are detected.' 
+    print '                         strings are detected.'
     print ''
     print '           options :'
     print '                          -h     --help      display this help screen'
@@ -57,26 +57,26 @@ def usage():
     print ''
     print ''
     print '           example :'
-    print '                         (1)     logcheck.py -h'                             
+    print '                         (1)     logcheck.py -h'
     print '                                             displays this help message'
     print ''
     print '                         (2)     cat ~/log.txt | logcheck.py -s'
     print '                                             checks the file ~/log.txt'
-    print ''                       
+    print ''
     print '                         (3)     logcheck.py -f ~/log.txt'
     print'                                              checks the file ~/log.txt'
     print ''
     print ''
-  
+
 
 ##########################
 ##  Internal Varibles   ##
-##########################  
+##########################
 
 # Detection Checking
-seen = False 
+seen = False
 
-# Standard Input Type 
+# Standard Input Type
 acceptStdin = False
 
 # File Input Type
@@ -87,7 +87,7 @@ filein = ''
 
 ##########################
 ##    Options Check     ##
-##########################  
+##########################
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], 'f:hs', ["help", "stdin"])
@@ -109,22 +109,22 @@ for o, a in opts:
 
 ##########################
 ##   Options Checking   ##
-##########################  
+##########################
 
 
 if acceptFilin and acceptStdin:
     print '     ERROR! : Only select one input source may be selected at a time'
     print '              Help is availible by typing "checklog -h"'
     sys.exit(-1)
-    
+
 if not ( acceptFilin or acceptStdin) :
     print '     ERROR! : At minium one input source must be selected'
     print '              Help is availible by typing "checklog -h"'
     sys.exit(-1)
- 
+
 ##########################
 ##      Set Input       ##
-##########################  
+##########################
 
 if ( acceptStdin == True ):
     lines = sys.stdin
@@ -137,17 +137,16 @@ else:
 
 ##########################
 ##   Check for Lines    ##
-##########################  
+##########################
 
 for line in lines:
-    seen = (string.find (line, parse1) >= 0) 
+    seen = (string.find (line, parse1) >= 0)
     if seen :
         print 1
         sys.exit()
-    seen = (string.find (line, parse2) >= 0) 
+    seen = (string.find (line, parse2) >= 0)
     if seen :
         print 1
-        sys.exit()   
-print 0        
-        
-        
+        sys.exit()
+print 0
+

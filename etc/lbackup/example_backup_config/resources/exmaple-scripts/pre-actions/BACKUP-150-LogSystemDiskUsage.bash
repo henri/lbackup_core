@@ -16,16 +16,16 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##       This software is licensed under 	    ##
 ##                  the GNU GPL.                ##
 ##                                              ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions available from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################    
+##################################################
 
 
 #
-#  This is a script will provide informaton regarding 
+#  This is a script will provide informaton regarding
 #  the disk usage on the system.
 #
 
@@ -48,12 +48,12 @@ report_destination_diskusage="YES"
 
 
 function log_system_disk_usage {
-    
-    # System Disk Usage 
+
+    # System Disk Usage
     if [ "${report_system_diskusage}" == "YES" ] ; then
         df -hi | sed s'/^/        /' | tee -ai $logFile
     fi
-    
+
     # Source Disk Usage
     if [ "${report_source_diskusage}" == "YES" ] ; then
         echo "Backup Source : ${backupSource} " | tee -ai $logFile
@@ -62,7 +62,7 @@ function log_system_disk_usage {
             echo "Source Disk Usage : ${backup_source_disk_usage}" | tee -ai $logFile
         fi
     fi
-    
+
     # Destination Disk Usage
     if [ "${report_destination_diskusage}" == "YES" ] ; then
         echo "Backup Destination : ${backupDest} " | tee -ai $logFile
@@ -71,9 +71,9 @@ function log_system_disk_usage {
             echo "Previous Backup Disk Usage : ${previous_backup_disk_usage}" | tee -ai $logFile
         fi
     fi
-    
+
     # You could also do something more involved such as working out how much space is required or just show the appropriate disk usage.
-    
+
 }
 
 
@@ -84,5 +84,5 @@ function log_system_disk_usage {
 log_system_disk_usage
 
 exit ${SCRIPT_SUCCESS}
-	
+
 exit 0

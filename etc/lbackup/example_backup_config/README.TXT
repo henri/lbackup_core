@@ -4,16 +4,16 @@
 
 It is strongly recommended that you check the documentation available from the following URL for information regarding the installation and use of LBACKUP.
 
-LBackup Home (online documentation) : 
+LBackup Home (online documentation) :
 http://www.lbackup.org
 
-For instructions on setting up your first test backup visit : 
+For instructions on setting up your first test backup visit :
 http://lucidsystems.org/tools/lbackup/instructions/setup
 
-To signup to the LBackup mailing lists vista the URL below: 
+To signup to the LBackup mailing lists vista the URL below:
 http://www.lucidsystems.org/tools/lbackup/lists/
 
-Lucid offers information storage and processing consultation and support services. Including support for LBackup : 
+Lucid offers information storage and processing consultation and support services. Including support for LBackup :
 http://www.lucidsystems.org
 
 LBackup uses rsync to copy and compare files. It is important that the copy of rsync installed and referenced by LBackup supports coping metadata which you or your policies require. Check the online documentation for the latest information regarding compiling and installing rsync, particularly if you are running Mac OS X. Also note that many versions of rsync which are available do not work correctly with symbolic links. Ensure that your version is working if you have symbolic links in your backup tree.

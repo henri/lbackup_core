@@ -16,7 +16,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##        This software is licensed under 	    ##
 ##                  the GNU GPL.                ##
 ##					                            ##
-##	   The developer of this software           ## 
+##	   The developer of this software           ##
 ##     maintains rights as specified in the     ##
 ##   Lucid Terms and Conditions available from  ##
 ##          http://www.lucidsystems.org     	##
@@ -24,14 +24,14 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##        Part of the LBackup project           ##
 ##           http://www.lbackup.org             ##
 ##                                              ##
-##################################################    
+##################################################
 
 
 #
 #  If the backup was successfull then the differnece
 #  in disk usage between this most recent backup and
 #  the previous backup will be reported in megabytes
-#  
+#
 #
 #
 # This script requires lbackup version 0.9.8.r2 or later
@@ -44,7 +44,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 # This example script utilzies the 'bc' and 'du' commands for various calculations
 # This script will not work correctly if the 'bc' or the 'du' commands are not availible
 #
-# Next revision of this script will add options for reporting the differences by 
+# Next revision of this script will add options for reporting the differences by
 # the backup log files for details reported by LBackup. This information may
 # be different from the actual disk utilization as reported by the 'du' command.
 
@@ -77,30 +77,30 @@ function preflight_checks {
     # Check the backup set exits
     if [ -d "${backup_set_directory}" ] ; then
         backup_set_directory_exists="YES"
-       
+
         # Check to see if there most recent backup exists
         if [ -d "${first_most_recent_backup_snapshot_path}" ] ; then
             first_most_recent_exits="YES"
         fi
-        
+
         # Check to see if there most recent backup exists
         if [ -d "${second_most_recent_backup_snapshot_path}" ] ; then
             second_most_recent_exits="YES"
         fi
-        
+
     else
         # Just report the fact and carry on with any other enabled the post action scripts
         echo "    WARNING! : Unable to calculate the size of the backup." | tee -ai $logFile
         echo "               Backup destination directory was not available : " | tee -ai $logFile
         echo "               ${new_link_destination}" | tee -ai $logFile
-        exit ${SCRIPT_WARNING} 
+        exit ${SCRIPT_WARNING}
     fi
-    
+
 }
 
 
 function calculate_snapshot_size_in_megabytes {
-    
+
     if [ -e "${directory_for_disk_usage_calculation_path}" ] ; then
         kilobytes_used=`du -sk "${directory_for_disk_usage_calculation_path}" | awk '{print $1}'`
         # change the way we report depending upon if the total is more or less than 10MB in total
@@ -118,19 +118,19 @@ function calculate_snapshot_size_in_megabytes {
         echo "               $directory_for_disk_usage_calculation_path" | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
-    
+
     # Not able to return floting point numbers. Therefore setting this varible is important. Better ideas for doin this in BASH are welcome.
     directory_for_disk_usage_calculation_size="$megabytes_used"
 
 }
 
 function calculate_differnece_in_snapshot_size_in_megabytes {
-    
+
     difference_between_snapshots=`echo "${first_most_recent_backup_snapshot_disk_usage} - ${second_most_recent_backup_snapshot_disk_usage}" | bc`
     positive_difference=`echo "${difference_between_snapshots} > 0" | bc`
     backup_snapshots_same_size=`echo "${first_most_recent_backup_snapshot_disk_usage} == ${second_most_recent_backup_snapshot_disk_usage}" | bc`
     difference_between_snapshots_multiplied_by_negitive_one=`echo "${difference_between_snapshots} * -1" | bc`
-    
+
 }
 
 
@@ -164,7 +164,7 @@ fi
 if [ ${backup_snapshots_same_size} == 1 ] ; then
     echo "        The previous and the most recently completed snapshots share approximately the same disk utilization."
 else
-    if [ $positive_difference == 1 ] ; then 
+    if [ $positive_difference == 1 ] ; then
         echo "        Compared with the previous snapshot approximately ${difference_between_snapshots} MB of additional disk usage is required." | tee -ai $logFile
     else
         echo "        This snapshot disk usage is approximately ${difference_between_snapshots_multiplied_by_negitive_one} MB smaller than the previous backup." | tee -ai $logFile

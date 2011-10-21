@@ -20,12 +20,12 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##                                              ##
 ##           Lucid Inormatin Systems.           ##
 ##						                        ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions availible from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################   
+##################################################
 
 
 #
@@ -34,7 +34,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 #  Even if you are not an administrator, it will prompt for
 #  administrator privilige elveation.
 #
-#  
+#
 #  Note : This Script Requires Mac OS 10.4 or later
 #
 
@@ -61,7 +61,7 @@ apple_script_command="return do shell script \"sudo ${path_to_backup_application
 ###############################
 
 # Check the Volume is Mounted
-if [ -f "${path_to_backup_application}" ] && [ -f "${path_to_backup_script}" ]; then 
+if [ -f "${path_to_backup_application}" ] && [ -f "${path_to_backup_script}" ]; then
 
     # Open Log File
     if [ "${path_to_log_file}" != "" ] ; then
@@ -70,7 +70,7 @@ if [ -f "${path_to_backup_application}" ] && [ -f "${path_to_backup_script}" ]; 
 
     # Start the Backup
     echo "`date`   :   Starting Backup..."
-    
+
     if [ "`whoami`" != "root" ] ; then
         osascript -e "${apple_script_command}"
     else
@@ -78,10 +78,10 @@ if [ -f "${path_to_backup_application}" ] && [ -f "${path_to_backup_script}" ]; 
     fi
 
 else
-    
+
     # Report Error
     echo "ERROR! : Unable to Find Backup Script or Backup Configuration"
-    
+
 fi
 
 exit 0
