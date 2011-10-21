@@ -22,7 +22,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##                                               ##
 ##           Lucid Inormatin Systems.            ##
 ##                                               ##
-##	      The developer of this software	     ## 
+##	      The developer of this software	     ##
 ##    maintains rights as specified in the       ##
 ##   Lucid Terms and Conditions availible from   ##
 ##            www.lucidsystems.org               ##
@@ -50,9 +50,9 @@ if ! [ -d "${backupDest}" ]  ; then
 	echo "    ERROR! : Unable to locate the backup destination directory :" | tee -ai $logFile
 	echo "             $backupDest" | tee -ai $logFile
 	exit ${SCRIPT_HALT}
-else 
+else
 	    exit ${SCRIPT_SUCCESS}
-fi 
+fi
 
 
 

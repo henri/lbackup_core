@@ -14,7 +14,7 @@
 
 # Description
 #
-# Mounts a remote area via SFTP 
+# Mounts a remote area via SFTP
 # Desinged for backup purposes
 # Requires MacFuse and SSHFS
 #
@@ -39,7 +39,7 @@ mount_point="/Volumes/${volume_name}"
 alternate_backup_device="/Volumes/BigDisk"
 
 
-# Internal Varibles : 
+# Internal Varibles :
 
 SSHFS=/usr/local/bin/sshfs
 mount_point_created="NO"
@@ -67,7 +67,7 @@ check_for_local_backup_devices
 
 # Mount some SFTP points mounting with FUSE!
 
-if ! [ -d ${mount_point} ] ; then 
+if ! [ -d ${mount_point} ] ; then
 
     # Create the mount point
     mkdir ${mount_point}
@@ -77,7 +77,7 @@ if ! [ -d ${mount_point} ] ; then
     else
         mount_point_created="YES"
     fi
-    
+
     # connect to the mount point using SSHFS
     $SSHFS ${ssh_user_name}@${ssh_server}:${ssh_remote_directory} ${mount_point} -oreconnect,ping_diskarb,volname=${volume_name}
     if [ $? != 0 ] ; then
@@ -88,7 +88,7 @@ if ! [ -d ${mount_point} ] ; then
             fi
         fi
         echo "    ERROR! : Mounting via SSH" | tee -ai $logFile
-        exit -1 
+        exit -1
     fi
     sleep 25
 else

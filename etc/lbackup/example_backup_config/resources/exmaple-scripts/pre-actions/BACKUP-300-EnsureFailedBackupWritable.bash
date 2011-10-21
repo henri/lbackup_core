@@ -22,12 +22,12 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##                                              ##
 ##           Lucid Inormatin Systems.           ##
 ##						                        ##
-##	      The developer of this software	    ## 
+##	      The developer of this software	    ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions availible from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################     
+##################################################
 
 
 
@@ -48,6 +48,6 @@ if [ -d "${failed_backup_section}" ] ; then
 	fi
 fi
 
-exit ${SCRIPT_SUCCESS}		
+exit ${SCRIPT_SUCCESS}
 
 

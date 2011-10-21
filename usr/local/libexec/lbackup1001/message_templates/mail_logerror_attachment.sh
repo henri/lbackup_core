@@ -42,7 +42,7 @@ version="1.3"
 
 cdateLOCAL=`date`
 cdateGMT=`date -u`
-reportDate="$cdateLOCAL" 
+reportDate="$cdateLOCAL"
 
 
 # Select the correct MD5 system
@@ -67,8 +67,8 @@ boundary="mail-boundary-marker.""$marker"
  echo "User-Agent: Lucid-Reporting-$version"
  echo 'Content-Type: multipart/mixed; boundary="'$boundary'";'
  echo "MIME-Version: 1.0"
- echo "X-Priority: 1"      
- echo "X-MSMail-Priority: High"  
+ echo "X-Priority: 1"
+ echo "X-MSMail-Priority: High"
  echo "X-Lucid-Report: Error-Detected"
  echo ""
  echo ""

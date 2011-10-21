@@ -20,7 +20,7 @@ skip_alias_check="NO"
 # for parsing arguments when running via the source command
 
 if [ $# -gt 1 ] ; then
-	if [ "${1}" == "-s" ] ; then 
+	if [ "${1}" == "-s" ] ; then
 		skip_alias_check="YES"
 	else
 		echo ""
@@ -37,12 +37,12 @@ fi
 direction=${1}
 
 function change_directory {
-        
-        # Check we are aliased        
+
+        # Check we are aliased
         alias_result=`alias | grep -e "^alias lcd="`
 		if [ "${alias_result}" == "" ] && [ "${skip_alias_check}" == "NO" ] ; then
                 echo ""
-                echo "In order for this tool to function correctly, it should be"        
+                echo "In order for this tool to function correctly, it should be"
                 echo "executed via the built-in \"source\" command."
                 echo ""
                 echo "If you are using the BASH shell, then execute the command"
@@ -59,7 +59,7 @@ function change_directory {
                 return -127
                 #exit -127
         fi
-        
+
         current_section=`echo $PWD | awk -F "/Section." '{print $2}' | awk -F "/" '{print $1}'`
         if [ "${current_section}" == "" ] ; then
                 echo "ERROR!: Unable to detect any backups sets within the current working directory."
@@ -68,19 +68,19 @@ function change_directory {
                 return -127
                 #exit -127
         fi
-        
-        
+
+
         if  [ "${direction}" == "back" ] || [ "${direction}" == "older" ] || [ "${direction}" == "past" ] || [ "${direction}" == "newer" ] || [ "${direction}" == "future" ] || [ "${direction}" == "forward" ] ; then
-        
+
                 destination_section=${current_section}
                 backup_directory="`echo $PWD | awk -F "/Section." '{print $1}'`/"
                 oldest_backup_section=`ls "${backup_directory}" | grep -e "^Section." | awk -F "Section." '{print$2}' | sort -n | tail -n 1`
                 most_recent_backup_section=`ls "${backup_directory}" | grep -e "^Section." | awk -F "Section." '{print$2}' | sort -n | head -n 1`
-        
-        
+
+
                 # Moving Forward in time
                 if  [ "${direction}" == "future" ] || [ "${direction}" == "forward" ] || [ "${direction}" == "newer" ] ; then
-                        if [ ${current_section} -gt $most_recent_backup_section ] ; then                
+                        if [ ${current_section} -gt $most_recent_backup_section ] ; then
                         # (( destination_section -- ))
                         destination_section=`echo "${destination_section}-1" | bc`
                 else
@@ -88,10 +88,10 @@ function change_directory {
                                 return -127
                                 #exit -127
                         fi
-                        
+
                 fi
-                
-                
+
+
                 # Moving Back in time
                 if [ "${direction}" == "back" ] || [ "${direction}" == "past" ] || [ "${direction}" == "older" ] ; then
                         if [ ${current_section} -lt $oldest_backup_section ] ; then
@@ -103,17 +103,17 @@ function change_directory {
                                 #exit -127
                         fi
                 fi
-        
-                # Make some modifications to the current working current working directory so that we can find the destination directory, which we plan to move to.        
+
+                # Make some modifications to the current working current working directory so that we can find the destination directory, which we plan to move to.
                 new_directory=`echo "$PWD" | awk '{sub(/Section.'$current_section'/,"Section.'$destination_section'")}; 1'`
-        
+
                 if [ -d "${new_directory}" ] ; then
                         cd "${new_directory}"
                         if [ $? != 0 ] ; then
                                 echo "ERROR! : Unable to move to the destination directory?"
                                 echo "         ${new_directory}"
                                 return -127
-                                #exit -127        
+                                #exit -127
                         fi
                 else
                         echo "ERROR! : The destination directory is no longer available."
@@ -121,21 +121,21 @@ function change_directory {
                         return -127
                         #exit -127
                 fi
-        
-        
+
+
         else
-                
+
                 echo "Usage examples : "
                 echo "  Move to a more recent backup:  . /usr/local/sbin/lcd future"
                 echo "  Move to an older backup:       . /usr/local/sbin/lcd past"
                 return -127
-                #exit -1 
-        
+                #exit -1
+
         fi
-        
+
         return 0
         #exit 0
-        
+
 }
 
 change_directory

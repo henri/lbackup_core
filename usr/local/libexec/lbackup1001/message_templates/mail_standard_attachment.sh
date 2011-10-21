@@ -40,7 +40,7 @@ version="1.3"
 
 cdateLOCAL=`date`
 cdateGMT=`date -u`
-reportDate="$cdateLOCAL" 
+reportDate="$cdateLOCAL"
 
 
 # Select the correct MD5 system

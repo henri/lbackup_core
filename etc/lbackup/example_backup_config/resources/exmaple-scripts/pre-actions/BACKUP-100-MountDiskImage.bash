@@ -16,16 +16,16 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##       This software is licenced under 	    ##
 ##                  the GNU GPL.                ##
 ##                                              ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions available from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################    
+##################################################
 
 
 #
-#  This is a script which mounts a disk image volume 
+#  This is a script which mounts a disk image volume
 #
 #  Note : If you are using rotating backups then make
 #         sure you set the permissions on the image
@@ -68,7 +68,7 @@ imageVolumeLocation3="/Volumes/BackupDrive3/backupimage.sparseimage"
 imageVolumeLocation4="/Volumes/BackupDrive4/backupimage.sparseimage"
 
 
-# Mount image as 
+# Mount image as
 user2mount=myusername
 
 
@@ -85,32 +85,32 @@ function perform_backup {
 	if [ "$dfResult" == "" ] ; then
 		# Image volume is not currently mounted, attempt to mount
 		echo "    Mounting Backup Image Volume..." | tee -ai $logFile
-		
+
 		# Mount the disk image
-		
+
 		## Mount with verification - Good for manual backup (you can skip it manually this is a good meathod use this if possible.)
 		su -l ${user2mount} -c "open ${imageVolumeLocation}"
-        
+
                 ## Mount with no verification (faster backup start for images residing on network - may have issues on 10.6.x and greater)
                 #su -l ${user2mount} -c "hdiutil attach ${imageVolumeLocation} -noverify"
-		
-		
+
+
 		sleep 30
 		dfResult=`df | grep $imageVolumeName`
 	fi
 
     # Check a Image Volume is Mounted for a Second Time
-	if [ "$dfResult" != "" ] ; then 
+	if [ "$dfResult" != "" ] ; then
 		echo "    Backup Image Volume Available" | tee -ai $logFile
 
 		# Exit and Continue With Other Scripts
 		exit ${SCRIPT_SUCCESS}
-		
+
 	else
 	    # Report that Backup Image Volume is Unavialible and that backup should be aborted.
 		echo "    Unable to Mount Encrypted Volume" | tee -ai $logFile
 		exit ${SCRIPT_HALT}
-		
+
 	fi
 
 }
@@ -120,15 +120,15 @@ function perform_backup {
 # Check backupVolume is availible
 dfResult=`df | grep $backupVolume`
 
-if [ "$dfResult" != "" ] ; then 
+if [ "$dfResult" != "" ] ; then
 	echo "    Backup Volume Available" | tee -ai $logFile
 	perform_backup
-else 
+else
     echo "    Unable to Detect Primary Backup Drive" | tee -ai $logFile
     backupVolume="${backupVolume2}"
     # Check backupVolume is availible
     dfResult=`df | grep $backupVolume`
-    if [ "$dfResult" != "" ] ; then 
+    if [ "$dfResult" != "" ] ; then
         echo "    Secondary Backup Volume Available" | tee -ai $logFile
         imageVolumeLocation="${imageVolumeLocation2}"
         perform_backup
@@ -137,7 +137,7 @@ else
         backupVolume="${backupVolume3}"
         # Check backupVolume is availible
         dfResult=`df | grep $backupVolume`
-        if [ "$dfResult" != "" ] ; then 
+        if [ "$dfResult" != "" ] ; then
             echo "    Tertiary Backup Volume Available" | tee -ai $logFile
             imageVolumeLocation="${imageVolumeLocation3}"
             perform_backup
@@ -146,22 +146,22 @@ else
             # Check backupVolume is availible
             backupVolume="${backupVolume4}"
             dfResult=`df | grep $backupVolume`
-            if [ "$dfResult" != "" ] ; then 
+            if [ "$dfResult" != "" ] ; then
                 echo "    Quaternary Backup Volume Available" | tee -ai $logFile
                 imageVolumeLocation="${imageVolumeLocation4}"
                 perform_backup
-            else 
+            else
                 echo "    Unable to Detect Quaternary Backup Drive" | tee -ai $logFile
                 exit ${SCRIPT_HALT}
-            fi    
+            fi
         fi
     fi
 fi
-	
+
 
 
 # Quinary = 5
-# Quaternary = 4	
-	
-	
+# Quaternary = 4
+
+
 exit 0

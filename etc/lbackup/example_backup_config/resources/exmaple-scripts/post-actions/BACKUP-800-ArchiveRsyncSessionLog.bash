@@ -16,18 +16,18 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##        This software is licensed under 	    ##
 ##                  the GNU GPL.                ##
 ##					                            ##
-##	   The developer of this software           ## 
+##	   The developer of this software           ##
 ##     maintains rights as specified in the     ##
 ##   Lucid Terms and Conditions available from  ##
 ##         http://www.lucidsystems.org     	    ##
 ##                                              ##
-##################################################    
+##################################################
 
 
 #
 #  This script will copy the rsync_session_log
 #  into an archvie folder with the date appended
-#  to the name of the session log. 
+#  to the name of the session log.
 #
 #  This script will not remove the session log after
 #  copying to the archive directory.
@@ -77,17 +77,17 @@ function preflight_checks {
             echo "" | tee -ai $logFile
             exit ${SCRIPT_WARNING}
         fi
-        
-        
+
+
         if  [ -d ${log_archive_folder_absolute} ] ; then
                 log_archive_folder_exits="YES"
         fi
-        
+
         if [ "${backupConfigurationFolderPath}" == "" ] ; then
                echo "    WARNING! : backupConfigurationFolderPath variable was not set." | tee -ai $logFile
                exit ${SCRIPT_WARNING}
         fi
-            
+
         if [ "${rsync_session_log_name}" == "" ] ; then
                echo "    WARNING! : rsync_session_log_name variable was not set." | tee -ai $logFile
                exit ${SCRIPT_WARNING}
@@ -97,13 +97,13 @@ function preflight_checks {
                echo "    WARNING! : Backup configuration directory is not available, rsync session log archiving canceled." | tee -ai $logFile
                exit ${SCRIPT_WARNING}
         fi
-        
+
         if [ "${backup_status}" != "SUCCESS" ] ; then
                        # You can remove this if you want the rsync log session log to be archived regardeless of the backup status.
                        echo "    WARNING! : Backup was not successful, rsync session log will not be archived." | tee -ai $logFile
                        exit ${SCRIPT_WARNING}
         fi
-        
+
 }
 
 
@@ -118,24 +118,24 @@ function generate_rsync_session_log_archive_directory {
             echo "     WARNING! : Unable to generate rsync session log archive directory" | tee -ai $logFile
             exit ${SCRIPT_WARNING}
         fi
-        
+
 }
 
 
 
 function archive_rsync_session_log {
-    
+
     current_date=`date "+%Y-%m-%d_@%H-%M-%S"`
     rsync_session_log_destination_name="rsync_session_log_${current_date}.log"
     rsync_session_log_destination_absolute="${log_archive_folder_absolute}/${rsync_session_log_destination_name}"
-    
+
     # Check there is no file already archived
     if [ -f "${rsync_session_log_destination_absolute}" ] ; then
         echo "     WARNING! : rsync session log with name already exists in archive directory." | tee -ai $logFile
         echo "                ${rsync_session_log_destination_absolute}"  | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
-    
+
     # Copy that log.
     cp "${rsync_session_log_absolute}" "${rsync_session_log_destination_absolute}"
     if [ $? != 0 ] ; then
@@ -144,11 +144,11 @@ function archive_rsync_session_log {
         echo "                  destination file : ${rsync_session_log_destination_absolute}" | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     fi
-    
+
 }
 
 function remove_old_rsync_session_logs {
-    
+
     # Check this directory actually exists
     if ! [ -d "${log_archive_folder_absolute}" ] ; then
          echo "     WARNING! : Unable to locate the rsync session log archive directory." | tee -ai $logFile
@@ -162,7 +162,7 @@ function remove_old_rsync_session_logs {
     rsync_session_log_array=(`ls -t "${log_archive_folder_absolute}" | grep "${rsync_session_log_name}"`)
 
     # Check that there are some rsync session log archives
-    number_of_archived_session_logs=`echo ${#rsync_session_log_array[@]}`    
+    number_of_archived_session_logs=`echo ${#rsync_session_log_array[@]}`
     if [ $number_of_archived_session_logs == 0 ] ; then
         echo "     NOTICE! : No archived logs located in the rsync log archive directory." | tee -ai $logFile
         echo "               ${log_archive_folder_absolute}" | tee -ai $logFile
@@ -172,7 +172,7 @@ function remove_old_rsync_session_logs {
     # Check to see if there are more archived rsync session logs than there are rotations in this configuation
     # The number of rotations is accruate - even though the access to the array starts at zero
     if [ ${number_of_archived_session_logs} -gt ${numRotations} ] ; then
-        # Okay so we need to remove some of these archives 
+        # Okay so we need to remove some of these archives
 
         # Lets calculate some indexes first to work out between which two points we are removing items.
         number_of_archived_session_logs_minus_one=${number_of_archived_session_logs}
@@ -185,7 +185,7 @@ function remove_old_rsync_session_logs {
 
             rsync_session_log_filename_to_remove="${rsync_session_log_array[${current_removal_point_in_array}]}"
             rsync_session_log_absolute_path_to_file_to_remove="${log_archive_folder_absolute}/${rsync_session_log_filename_to_remove}"
-            
+
             if [ -f "${rsync_session_log_absolute_path_to_file_to_remove}" ] ; then
                   #echo "rsync_session_log_absolute_path_to_file_to_remove : ${rsync_session_log_absolute_path_to_file_to_remove}" | tee -ai $logFile
                   rm -f "${rsync_session_log_absolute_path_to_file_to_remove}"
@@ -197,7 +197,7 @@ function remove_old_rsync_session_logs {
             fi
             ((current_removal_point_in_array++))
         done
-        
+
     fi
 }
 

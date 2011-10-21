@@ -37,7 +37,7 @@ version="1.3"
 
 cdateLOCAL=`date`
 cdateGMT=`date -u`
-reportDate="$cdateLOCAL" 
+reportDate="$cdateLOCAL"
 
 ##########################
 ##    Generate Email    ##
@@ -58,7 +58,7 @@ echo "X-Lucid-Report: Backup-Success"
 echo ""
 echo "Lucid Backup Report $reportDate"
 echo ""
-echo "$backup_identity" 
+echo "$backup_identity"
 echo "Backup Reporting was successful, check log below for details"
 echo ""
 echo ""

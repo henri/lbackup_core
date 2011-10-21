@@ -22,12 +22,12 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##                                              ##
 ##           Lucid Inormatin Systems.           ##
 ##						                        ##
-##	      The developer of this software	    ## 
+##	      The developer of this software	    ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions availible from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################     
+##################################################
 
 # This script requires LBackup 0.9.8r5 later.
 #
@@ -40,7 +40,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 # warmly welcomed : http://www.lbackup.org
 #
 # If you would like to cancel a backup should the percentage be
-# to low then you should look at the example script called : 
+# to low then you should look at the example script called :
 # BACKUP-200-CheckBackupDiskUsagePercentage.bash
 #
 
@@ -52,7 +52,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ## Intenral Varibles
 
 # You may wish to change this slightly if you want to check a differnet drive or an OS other than Mac OS X.
-# If you are dealing with disk images altering this further may be useful. 
+# If you are dealing with disk images altering this further may be useful.
 backupDestVolume=`echo "${backupDest}" | awk -F "/" '{ print $1"/"$2"/"$3}'`
 
 backupDestVolume_diskusage_percentage=-1
@@ -65,7 +65,7 @@ if ! [ -d "${backupDestVolume}" ]  ; then
 fi
 
 
-## Functions 
+## Functions
 function calculate_disk_usage_for_backup_destination_volume {
     backupDestVolume_diskusage_percentage=`df -h | grep "${backupDestVolume}" | awk '{print $5}' | awk -F "%" '{print $1}'`
     if [ $? != 0 ] || ! [ $backupDestVolume_diskusage_percentage -ge 0 ] ; then

@@ -20,12 +20,12 @@
 ##                                              ##
 ##           Lucid Inormatin Systems.           ##
 ##						                        ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions availible from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################   
+##################################################
 
 
 

@@ -29,15 +29,15 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 
 ##
-## Running this script will perform a 
+## Running this script will perform a
 ## backup as specified in the configuration file
 ## (C)2005 Lucid Information Systems
-## 
+##
 ## It is important that you have a copy of Rsync
 ## installed which will preserve the meta data
 ## which you are planning to save
 ##
-## Any patches should be submitted to 
+## Any patches should be submitted to
 ## http://wwww.lucidsystems.org
 ##
 ## LBackup Official Home Page is
@@ -47,7 +47,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 ##################################
 ##      Structural Overview     ##
-##################################                
+##################################
 #
 #   You should only need to set
 #   the primary configuration
@@ -66,7 +66,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 #   Lucid Backup Components : maillog_script.bash
 #   Dependencies : python, ssh, bash, echo, mv, rm, tee, dirname, rsync or RSyncX
 #
-    
+
 
 ## Calculate amount of changed data
 ## Atomic Version
@@ -75,18 +75,18 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##################################
 ##         Initial Check        ##
 ##################################
-# Backup Using  ($1) 
+# Backup Using  ($1)
 # Make sure a file has been passed in on the command line
 if [ $# -ne 1 ]; then
          echo 1>&2 Usage: /usr/local/sbin/lbackup configuration_file.conf
          exit -127
 fi
- 
- 
- 
+
+
+
 ########################
 ## Internal Functions ##
-########################      
+########################
 
 # Function is used by get_absolute_path function
 
@@ -95,7 +95,7 @@ fi
 # Called by the get_absolute_path funtion
 function resolve_symlinks {
     # Check if it is an alias
-    if [ -L "$quoted_absolute_path" ] ; then 
+    if [ -L "$quoted_absolute_path" ] ; then
       #  # If Alias then find where the alias is pointing
         quoted_absolute_path=`ls -l "$quoted_absolute_path" | awk 'BEGIN { FS = " -> " } ; { print $2 }'`
         n_links_followed=$[$n_links_followed+1]
@@ -109,22 +109,22 @@ function resolve_symlinks {
 }
 
 
-# Before calling this function set the varible quoted_absolute_path 
+# Before calling this function set the varible quoted_absolute_path
 # to the best guess of the absolute path. eg: quoted_absolute_path="$0"
 # Upon error : quoted_absolute_path is set to -30
 # You should check for this instance a loop has occoured with the links
 function get_absolute_path {
     # Find the configuration files absolute path
-    
+
     # check for ./ at the start
     local dot_slash_test=`echo "$quoted_absolute_path" | grep '^./'`
     if [ "$dot_slash_test" != "" ]  ; then
         quoted_absolute_path=`basename $quoted_absolute_path`
     fi
-    
+
     # find absolute path (parent path times ".." will not be striped path items)
     quoted_absolute_path=$(echo $quoted_absolute_path | grep '^/' || echo `pwd`/$quoted_absolute_path)
-    
+
     # Reset Link Counter
     n_links_followed=0
     # Check if there are any symlinks
@@ -153,22 +153,22 @@ function check_mailconfigpartner {
 }
 
 
-# Send Mail Functions  
+# Send Mail Functions
 # Sends an email out
 function send_mail_log  {
     check_mailconfigpartner
-    
+
     ## Close Log File
     echo "" >> $logFile
     echo "" >> $logFile
-    
+
     bash $currentdir/$mailScriptName "$mailconfigpartner"
     return 0
-} 
+}
 
 
 # Backup Destionion Check
-# Check that the backup destination directory is availible 
+# Check that the backup destination directory is availible
 function local_backup_destination_availible  {
 	# Actually we only check if there is something (not that is a directory) this allows people to
 	# configure links for the backup. An error will be reported if rsync is not able to copy files
@@ -185,7 +185,7 @@ function local_backup_destination_availible  {
 
 
 # Backup Source Check
-# Check that the backup source is availible 
+# Check that the backup source is availible
 function local_backup_source_availible  {
 	# Actually we only check if there is something (not that is a directory) this allows people to
 	# configure links for the backup. An error will be reported if rsync is not able to copy files
@@ -201,10 +201,10 @@ function local_backup_source_availible  {
 }
 
 
-# Post Action Functions 
+# Post Action Functions
 # Performs the post action scripts
 function perform_post_action_scripts {
-         
+
         # Perform Post Action Scripts
         if [ -s "${backup_post_action}" -a -x "${backup_post_action}" ] ; then
 
@@ -217,8 +217,8 @@ function perform_post_action_scripts {
             export backup_status                  # provides feed back regarding the status of the backup.
             export backupSource                   # provides the directory we are backing up (carful may be remote).
             export backupDest                     # provides the directory we are storing the backups (carful may be remote).
-            
-            # This is only required for the post action not for the pre action 
+
+            # This is only required for the post action not for the pre action
             export pre_backup_script_status       # provides access to the pre status of the pre backup script actions.
 
             # Export the Script Return Codes
@@ -233,26 +233,26 @@ function perform_post_action_scripts {
             backup_post_action_exit_value=$?
 
 
-            if [ ${backup_post_action_exit_value} != ${SCRIPT_SUCCESS} ] ; then 
+            if [ ${backup_post_action_exit_value} != ${SCRIPT_SUCCESS} ] ; then
 
                 # Determin weather script errors should be reported ( this will affect backup success status )
-                if [ ${backup_post_action_exit_value} == ${SCRIPT_HALT} ] ; then 
+                if [ ${backup_post_action_exit_value} == ${SCRIPT_HALT} ] ; then
                     echo 1>&2 "ERROR! : Post Backup Action Script Failed : Backup Aborted Requested" | tee -ai $logFile
                     backup_status="FIALED"
                 fi
 
                 # Check for Warning exit codes
-                if [ ${backup_post_action_exit_value} == ${SCRIPT_WARNING} ] ; then 
+                if [ ${backup_post_action_exit_value} == ${SCRIPT_WARNING} ] ; then
                     echo 1>&2 "WARNING! : Post Backup Action Resulted in Warning : Backup Continuing..." | tee -ai $logFile
                 else
 
                     # Report Undefined Exit Value
                     echo 1>&2 "WARNING! : Undefined Post Action Exit Value : ${backup_post_action_exit_value}" | tee -ai $logFile
-                    echo 1>&2 "           Backup Continuing..." | tee -ai 
+                    echo 1>&2 "           Backup Continuing..." | tee -ai
                 fi
             fi
         fi
-        
+
 }
 
 
@@ -263,7 +263,7 @@ function perform_post_action_scripts {
 
 # Configuration mayoveride these default settings
 
-# Is the source for this backup located on a remote machine acessed via SSH (YES/NO) 
+# Is the source for this backup located on a remote machine acessed via SSH (YES/NO)
 useSSH="NO"
 
 # Backup Pre and Post Action Script Varible Initilisers - leave these blank
@@ -285,7 +285,7 @@ default_ssh_rsync_path_local_darwin="/usr/bin/rsync"
 custom_ssh_rsync_path_local_darwin="/usr/local/bin/rsync"
 ssh_rsync_path_local_overidden_by_configuration="NO"
 
-# Local Rsync Path Settings for local backup 
+# Local Rsync Path Settings for local backup
 # (fine provided we are running Mac OS 10.4.x or greater)
 rsync_path_local=""
 default_rsync_path_local_darwin="/usr/bin/rsync"
@@ -347,7 +347,7 @@ export backupConfigurationFilePath="$quoted_absolute_path"
 export backupConfigurationFolderPath=`dirname "$backupConfigurationFilePath"`
 
 # Check file specified exists and is a lbackup command file.
-if ! [ -f "$backupConfigurationFilePath" ] ; then 
+if ! [ -f "$backupConfigurationFilePath" ] ; then
     echo 1>&2 "ERROR! : Specified configuration file dose not exist" | tee -ai $logFile
     echo      "         File Referenced : $backupConfigurationFilePath" | tee -ai $logFile
     exit -127
@@ -378,7 +378,7 @@ if [ "$ssh_rsync_path_local" == "" ] ; then
 	ssh_rsync_path_local="${default_ssh_rsync_path_local_darwin}"
 else
 	ssh_rsync_path_local_overidden_by_configuration="YES"
-	
+
 	# If we are using SSH then the local version of rsync will need to be set to the local version of rsync specified in the config file
 	if [ "${useSSH}" == "YES" ] ; then
 	    custom_rsync_path_local_darwin="${ssh_rsync_path_local}"
@@ -474,7 +474,7 @@ quoted_absolute_path=$0; get_absolute_path
 currentfilepath="$quoted_absolute_path"
 currentdir=`dirname "$currentfilepath"`
 
-# Set The Utilities Directory Absolute Path 
+# Set The Utilities Directory Absolute Path
 utilitiesdir="$currentdir""/""$utilities_folder_name"
 
 # Internal Configuration
@@ -572,7 +572,7 @@ echo "" >> $logFile
 
 # Check for a backup lock and other lock related tasks if it has not been disabled
 if [ "$ignore_backup_lock" == "NO" ] ; then
-        
+
         # Check for the lock file
         if [ -f "$backup_lock_file_absolute_path" ] ; then
                 # It may be good to have further options such as how long ago was the lock file generated etc (ie should the lock be ignored)
@@ -580,25 +580,25 @@ if [ "$ignore_backup_lock" == "NO" ] ; then
                 echo "         Backup Cancelled." | tee -ai $logFile
                 exit -1
         fi
-        
+
         # Test the ability to write the lock file and report an error if there was one.
         touch "$backup_lock_file_absolute_path" 2>/dev/null
         if [ $? != 0 ] ; then
-                echo "WARNING! : Unable to generate backup lock file : $backup_lock_file_absolute_path" | tee -ai $logFile  
+                echo "WARNING! : Unable to generate backup lock file : $backup_lock_file_absolute_path" | tee -ai $logFile
         fi
-        
+
         # Set a trap so that if the backup is unexpectedly exited the lock file will be removed.
         trap "{ sleep 0.5 ; rm -f \"$backup_lock_file_absolute_path\"; exit 0 ; }" EXIT
 
 else
         # Skip backup lock file check notification not written to the log file on purpose (for this version).
-        echo "Backup lock file check skipped." 
+        echo "Backup lock file check skipped."
 fi
 
 
 # Wake Clinet
 if [ "$WAKE" == "YES" ] ; then
-	echo "Waking Client : $hardware_address..." | tee -ai $logFile  
+	echo "Waking Client : $hardware_address..." | tee -ai $logFile
 	python $utilitiesdir/wake.py $hardware_address
 	sleep 10
 fi
@@ -615,7 +615,7 @@ if [ "$PingTest" == "YES" ] ; then
         ## Close Log File
         echo "" >> $logFile
         echo "" >> $logFile
-        
+
         # Remove the backup lock file - probably not required - this will be handled by the trap
         rm -f "$backup_lock_file_absolute_path"
         exit -1
@@ -636,12 +636,12 @@ if ( [ "$SSHTest" == "YES" ] && [ "$useSSH" == "YES" ] ) ; then
            ## Close Log File
            echo "" >> $logFile
            echo "" >> $logFile
-           
+
            # Remove the backup lock file - probably not required - this will be handled by the trap
            rm -f "$backup_lock_file_absolute_path"
            exit -1
    fi
-fi 
+fi
 
 
 # Check and report if the post action scripts are set to run even if there is an error.
@@ -660,56 +660,56 @@ fi
 
 # Perform Pre Action Scripts
 if [ -s "${backup_pre_action}" -a -x "${backup_pre_action}" ] ; then
-    
+
     echo "Checking for Pre Action Scripts..."
-    
+
     # Export Appropriate varibles to the scripts
     export logFile                        # pre scripts have the ability to write data to the log file
     export rsync_session_log_file         # pre scripts may want to use this log
     export backupConfigurationFolderPath  # should have been done previously anyway
     export backupSource                   # provides the directory we are backing up (carful may be remote)
     export backupDest                     # provides the directory we are storing the backups (carful may be remote)
-    
+
     # Export the Script Return Codes
     export SCRIPT_SUCCESS
     export SCRIPT_WARNING
     export SCRIPT_HALT
-    
+
     # Execute the Pre Backup Actions (passing all pararmeters passed to the script)
     "${backup_pre_action}" $*
-    
+
     # Store the Exit Value from the Pre Backup Script
     backup_pre_action_exit_value=$?
-    
+
     if [ ${backup_pre_action_exit_value} == ${SCRIPT_SUCCESS} ] ; then
         # Set Pre Backup Script Success Flag
         pre_backup_script_status="SUCCESS"
     else
         # Determin weather to proceed with the backup
-        if [ ${backup_pre_action_exit_value} == ${SCRIPT_HALT} ] ; then 
+        if [ ${backup_pre_action_exit_value} == ${SCRIPT_HALT} ] ; then
             echo 1>&2 "ERROR! : Pre Backup Action Script Failed : Backup Aborted" | tee -ai $logFile
-            
+
             if [ "$post_actions_on_backup_error" == "YES" ] ; then
                 # We are going to run post actions even though the backup has failed
                 perform_post_action_scripts
             fi
-            
+
             send_mail_log
-            
+
             # Remove the backup lock file - probably not required - this will be handled by the trap
             rm -f "$backup_lock_file_absolute_path"
-            
+
             exit ${SCRIPT_HALT}
         fi
         # Check for other exit codes
-        if [ ${backup_pre_action_exit_value} == ${SCRIPT_WARNING} ] ; then 
+        if [ ${backup_pre_action_exit_value} == ${SCRIPT_WARNING} ] ; then
             echo 1>&2 "WARNING! : Pre Backup Action Resulted in Warning : Backup Continuing..." | tee -ai $logFile
         else
             # Report Undefined Exit Value
             echo 1>&2 "WARNING! : Undefined Pre Action Exit Value : ${backup_pre_action_exit_value}" | tee -ai $logFile
-            echo 1>&2 "           Backup Continuing..." | tee -ai 
+            echo 1>&2 "           Backup Continuing..." | tee -ai
         fi
-    fi    
+    fi
 fi
 
 
@@ -726,13 +726,13 @@ if [ "${local_backup_and_source_availibility_checks_enabled}" == "YES" ] ; then
     # This is not yet implimeted or even planned. It is just a possibility.
     local_backup_destination_availible
 
-    # Check if the backup soruce is availible - currenlty only local. 
+    # Check if the backup soruce is availible - currenlty only local.
     # This will probably be exteded to network backups in the future.
     if [ "$useSSH" != "YES" ] ; then
     	# The source is local so check if the local source is availible
     	local_backup_source_availible
     fi
-    
+
 fi
 
 
@@ -746,16 +746,16 @@ fi
 
 if ! [ -f $EXCLUDES ] ; then
     echo "Exclude-definitions missing" | tee -ai $logFile
-    
+
     # Remove the backup lock file - probably not required - this will be handled by the trap
     rm -f "$backup_lock_file_absolute_path"
     exit -127
-fi  
+fi
 
 
 # Check if Hard Links Are Required
 if [ $numRotations -ge 2 ] ; then
-	#Check if there are files to link to 
+	#Check if there are files to link to
 	if [ -d "$linkDest" ] ; then
 		#make sure links are created
 		createLinks="YES"
@@ -779,22 +779,22 @@ if [ -d "$backupDestCRotTemp" ] ; then
             rm -Rf "$backupDestCRotTemp"
             if [ $? == 0 ] ; then
                 successfully_removed_failed_backup="YES"
-            fi 
+            fi
         fi
 	else
     	successfully_removed_failed_backup="YES"
     fi
-    
+
     if [ "${successfully_removed_failed_backup}" != "YES" ] ; then
-            
+
         backup_status="FIALED"
-            
+
         echo "ERROR! : Removing Temporary Directory" | tee -ai $logFile
         if [ "$post_actions_on_backup_error" == "YES" ] ; then
             # We are going to run post actions even though the backup has failed
             perform_post_action_scripts
         fi
-                
+
         send_mail_log
 
         # Remove the backup lock file - probably not required - this will be handled by the trap
@@ -818,42 +818,42 @@ fi
 # Set Show Progress
 showProgress="NO"
 
-# Checks the Remote OS if this backup is via SSH  
+# Checks the Remote OS if this backup is via SSH
 # (NOT CURRNTLY IN USE REQUIRES FURTHER TESTING + DO YOU WANT TO HAVE ANOTHER PASSWORD PROMPT OR HOLE IN SSH WRAPPER)
 if [ "$check_remote_system" == "YES" ] && [ useSSH="YES" ] ; then
-	
+
 	echo "Testing Remote System Type and Version..." | tee -ai $logFile
     check_remote_system_results=`ssh $sshSource "uname -rs"`
     remote_system_check_TestResult=${?}
-	
+
 	if [ ${remote_system_check_TestResult} != 0 ] || [ "${check_remote_system_results}" == "" ] ; then
 		echo "ERROR! : Unable to determine remote system type or version." | tee -ai $logFile
 		echo "         Check the remote host is reachable and if you are using key based authentication  that" | tee -ai $logFile
 		echo "         any wrapper scripts allow remote access to calls to the command : \"uname -rs\"" | tee -ai $logFile
-		
+
 		# Remove the backup lock file - probably not required - this will be handled by the trap
         rm -f "$backup_lock_file_absolute_path"
 		exit -127
 	else
-	
+
 		# Calculate the remote system type and version
 		remote_system_type=`echo ${check_remote_system_results} | awk '{ print $1 }'`
 		remote_system_version=`echo ${check_remote_system_results} | awk '{ print $2 }'`
 
-		# Log the System Type and Version	-- before this can be enabled we need to check the error checking code.	
+		# Log the System Type and Version	-- before this can be enabled we need to check the error checking code.
 		#echo "    Remote System Name : ${remote_system_type}" | tee -ai $logFile
 		#echo "	  Remote System Version : ${remote_system_version}" | tee -ai $logFile
-		
+
 		if [ "${remote_system_type}" == "Darwin" ] ; then
-			
+
 			accept_default_rsync_darwin_remote_ssh="NO"
-			
+
 			# Calculate the remote major dawinn version
 			remote_system_major_version_darwin=`echo ${remote_system_version} | awk -F "." '{print $1}'`
 			if [ $? != 0 ] ; then
 				remote_darwin_version="ERROR"
 			fi
-				
+
 			# Sets the minimum version of Darwin when using the remote version of the OS bundled version of rysnc ( darwin version 8 is equivilent to tiger )
 			darwin_standard_rsync_minimum_version_remote=8
 
@@ -866,15 +866,15 @@ if [ "$check_remote_system" == "YES" ] && [ useSSH="YES" ] ; then
 					# that we are running a good version and also not that resource forks, may take up more space.
 		            accept_default_rsync_darwin_remote_ssh="YES"
 				fi
-			else 
+			else
 				echo "ERROR! : Unable to determine major Darwin release version of the remote machine." | tee -ai $logFile
-				
+
 				# Remove the backup lock file - probably not required - this will be handled by the trap
                 rm -f "$backup_lock_file_absolute_path"
 				exit -127
-			fi	
+			fi
 		fi
-	fi 
+	fi
 fi
 
 
@@ -883,12 +883,12 @@ fi
 local_system_name=`uname`
 
 if [ "$check_local_system" == "YES" ] ; then
-	
+
 	# This system has been tested on HFS+ formated partitions. It requires testing on other formats.
 
 	# If LBackup is running on Darwin then lets set the appropriate options for a backup
     if [ "$local_system_name" == "Darwin" ] ; then
-        
+
 		# So we are running on Darwin, in which case there is probably some meta data which needs to be beacked up.
 
 		# Check the version of Darwin which is running - ie 10.3.x / 10.4.x / 10.5.x ...etc
@@ -900,22 +900,22 @@ if [ "$check_local_system" == "YES" ] ; then
 		# Check if there are any custom rsync versions insalled locally
         if [ -f ${custom_rsync_path_local_darwin} ] ; then
             installed_rsync_version=`${custom_rsync_path_local_darwin} --version | head -n 1`
-            
+
             # Gathter Some Additional Information Regarding the Current Version of Rsync
             installed_rsync_version_number=`${custom_rsync_path_local_darwin} --version | head -n 1 | awk '{print $3}'`
             installed_rsync_version_number_major=`${custom_rsync_path_local_darwin} --version | head -n 1 | awk '{print $3}' | awk -F "." '{print $1}'`
             installed_rsync_version_support_for_preserve_create_times=`${custom_rsync_path_local_darwin} --help | grep -e "--crtimes" | awk '{print $1}' | grep -e "-N" | cut -c 1-2`
             installed_rsync_version_support_for_preserve_file_flags=`${custom_rsync_path_local_darwin} --help | grep -e "--fileflags" | awk '{print $1}' | grep -e "--fileflags"`
             installed_rsync_version_support_for_affect_immutable_files=`${custom_rsync_path_local_darwin} --help | grep -e "--force-change" | awk '{print $1}' | grep -e "--force-change"`
-            
+
             # Check if the custom local version of rsync supports mac OSX meta data
             custom_rsync_path_local_supports_mac_osx_metadata="NO"
             if [ ${installed_rsync_version_number_major} -ge 3 ] && [ "${installed_rsync_version_support_for_preserve_create_times}" == "-N" ] && [ "${installed_rsync_version_support_for_preserve_file_flags}" == "--fileflags" ] && [ "${installed_rsync_version_support_for_affect_immutable_files}" == "--force-change" ] ; then
                 custom_rsync_path_local_supports_mac_osx_metadata="YES"
             fi
-            
+
         else
-        
+
             echo "Checking Default Rsync Version..." | tee -ai $logFile
             installed_rsync_version="STANDARD"
 
@@ -926,23 +926,23 @@ if [ "$check_local_system" == "YES" ] ; then
             installed_rsync_version_support_for_preserve_file_flags=`${default_ssh_rsync_path_local_darwin} --help | grep -e "--fileflags" | awk '{print $1}' | grep -e "--fileflags"`
             installed_rsync_version_support_for_affect_immutable_files=`${default_ssh_rsync_path_local_darwin} --help | grep -e "--force-change" | awk '{print $1}' | grep -e "--force-change"`
 
-        fi        
-        
-		
+        fi
+
+
 		# Paramerters for selecting the standard version of rsync.
-		
+
 		# By default do we allow the default version of rsync.
 		#accept_default_rsync_darwin="NO"
 		accept_default_rsync_darwin="YES"
-		
+
 		if [ "$ssh_permit_standard_rsync_version" == "NO" ] && [ "$useSSH" == "YES" ]; then
 			accept_default_rsync_darwin_remote_ssh="NO"
 			accept_default_rsync_darwin="NO"
 		fi
-		
+
 		# Determins that the minimum version of Darwin when using the local version of rysnc ( darwin version 8 is equivilent to tiger )
 		darwin_standard_rsync_minimum_version_local=8
-		
+
 		# Determin wheather the standard version of rsync is acceptible for local use
 		# This depends upon two factors. The first factor is to do with the version of darwin on the local system.
 		# The second factor involved is wheather this is a network backup (via SSH).
@@ -954,9 +954,9 @@ if [ "$check_local_system" == "YES" ] ; then
 						# default version of rsync  bundeed with Mac OS X to be suffecient. Using the default version
 						# of rsync which is bundeled with the Mac OS X will result in the resource forks sometimes
 						# requring more storage space as they are not always hard linked correctly.
-						accept_default_rsync_darwin="YES"	
+						accept_default_rsync_darwin="YES"
 					fi
-				else 
+				else
 				    if [ "${custom_rsync_path_local_supports_mac_osx_metadata}" == "YES" ] ; then
     		            # The custom version of Rsync supports all the Mac OS X support we require. Lets us it rather than the default Mac OS X version.
                         accept_default_rsync_darwin="NO"
@@ -973,45 +973,45 @@ if [ "$check_local_system" == "YES" ] ; then
 						# default version of rsync  bundeed with Mac OS X to be suffecient. Using the default version
 						# of rsync which is bundeled with the Mac OS X will result in the resource forks sometimes
 						# requring more storage space as they are not always hard linked correctly.
-						accept_default_rsync_darwin="YES"	
+						accept_default_rsync_darwin="YES"
 				else
                     if [ "$useSSH" == "NO" ] ; then
-                        # Running a local backup on Mac OS X 10.3.9 or earlier. Therefore, we are not going to use 
-                        # the default Mac OS X bundled version of rsync. 
+                        # Running a local backup on Mac OS X 10.3.9 or earlier. Therefore, we are not going to use
+                        # the default Mac OS X bundled version of rsync.
                         accept_default_rsync_darwin="NO"
                     fi
                 fi
 			fi
 		fi
-		
-		
 
-        # Set hard link options appropriatly 
+
+
+        # Set hard link options appropriatly
         # Code is turning into spaghetti, this needs to be re-factored.
         # ( code will requrie tidy up - check for all possibilities on all plat forms )
         # needs to be made platform independent
-        
+
         #
         # -e, --rsh=COMMAND           specify the remote shell
         # -a, --archive               archive mode, equivalent to -rlptgoD
         # -h, --help                  show this help screen
         # -s                          is unknowen
         # -f                          is unknowen
-        # 
-        
+        #
+
         # Set Hard Link Options to null
         hardlink_option=""
-        
+
         function rsync_version_unkown {
             echo "ERROR! : Unknown Version of Rsync Installed" | tee -ai $logFile
             echo "         Check available rsync options, before proceeding " | tee -ai $logFile
-            
+
             # Remove the backup lock file - probably not required - this will be handled by the trap
             rm -f "$backup_lock_file_absolute_path"
             exit -127
         }
-        
-        
+
+
         if [ "$installed_rsync_version" == "STANDARD" ] && [ "$accept_default_rsync_darwin" == "NO" ] ; then
                     echo "ERROR! : Only standard version of rsync installed" | tee -ai $logFile
 					echo "         The standard rsync version will not preserve much meta data." | tee -ai $logFile
@@ -1019,14 +1019,14 @@ if [ "$check_local_system" == "YES" ] ; then
 					echo "         Download patched rsync version from the URL below :" | tee -ai $logFile
 					echo "         http://www.lucidsystems.org/lbackup" | tee -ai $logFile
 					echo "         Backup canceled." | tee -ai $logFile
-					
+
 					# Remove the backup lock file - probably not required - this will be handled by the trap
                     rm -f "$backup_lock_file_absolute_path"
                     exit -127
         fi
-        
+
         if [ "$accept_default_rsync_darwin" == "NO" ] ; then
-        
+
             # set the local rsync path to the default custom version of rsync
             rsync_path_local="$custom_rsync_path_local_darwin"
 
@@ -1039,17 +1039,17 @@ if [ "$check_local_system" == "YES" ] ; then
             if [ "${ssh_rsync_path_local_overidden_by_configuration}" == "NO" ] ; then
                ssh_rsync_path_local="$custom_ssh_rsync_path_local_darwin"
             fi
-            
-        
-            # check if we are running rsync version 3 or later		
+
+
+            # check if we are running rsync version 3 or later
     	    # This is only checking the local version. This should be updated to work with all versions.
     	    if [ ${installed_rsync_version_number_major} -ge 3 ]; then
     	        # Set options for rsync version 3 to preserve meta data on mac OS X
-    	        
+
                 echo "Using custom rsync : v3..." | tee -ai $logFile
-                
+
                 # This small x option will mean that we do not cross file system bounderies...think abou this....
-           
+
                 if [ "${custom_rsync_path_local_supports_mac_osx_metadata}" == "YES" ] ; then
                     #hardlink_option="-NHAXEx --protect-args --fileflags --force-change"
                     hardlink_option="-NHAXE --protect-args --fileflags --force-change"
@@ -1059,42 +1059,42 @@ if [ "$check_local_system" == "YES" ] ; then
     	            hardlink_option="-HAXE --protect-args --fileflags --force-change"
     	        fi
     	    fi
-    	
+
 
     		# If we are only accepting a patched version of rsync and the local rsync path has not been overidden,
     		# then lets set some options for meta data preseivation.
     		if [ "$accept_default_rsync_darwin" == "NO" ] && [ "${rsync_path_local_overidden_by_configuration}" == "NO" ]  && [ "${ssh_rsync_path_remote_overidden_by_configuration}" == "NO" ] && [ "${ssh_rsync_path_local_overidden_by_configuration}" == "NO" ] ; then
-            	      
+
     	  		# Check for RsyncX or rsync (with fixed chown)
     	        if [ "$installed_rsync_version" == "rsync  version 2.6.0  protocol version 27" ] ; then
-        
+
     	            # Check that the corrisponding os x package is installed
     	            rsync_search="RsyncX_v2.1.pkg"
     	            osx_package_check=`ls /Library/Receipts | grep -x "$rsync_search"`
-            
+
     	            if [ "$osx_package_check" == "$rsync_search" ] ; then
                         echo "Using custom rsync : RsyncX..." | tee -ai $logFile
-                        
-    	                # We are deling with an older version of rsync (possibly RsyncX 2.1), this will require additional flags 
+
+    	                # We are deling with an older version of rsync (possibly RsyncX 2.1), this will require additional flags
     	                hardlink_option="--eahfs"
     	            else
     	                # Unrcognised Version of Rsync
     	                rsync_version_unkown
     	            fi
-            
+
     	        fi
-        
+
             	# Check for chown Fixed Version of Rsync
     	        if [ "$installed_rsync_version" == "rsync  version 2.6.3  protocol version 28" ] ; then
-    	            
+
     	            # Check that the corrisponding os x package is installed
     	            rsync_search="rsync.pkg"
     	            osx_package_check=`ls /Library/Receipts | grep -x "$rsync_search"`
-        
+
     	            if [ "$osx_package_check" == "$rsync_search" ] ; then
                         echo "Using custom rsync : v2..." | tee -ai $logFile
-    	              
-    	                # We are deling with a patched version of rsync which is set to preserve some meta data 
+
+    	                # We are deling with a patched version of rsync which is set to preserve some meta data
     	                #hardlink_option="--hfs-mode=appledouble"
     	                hardlink_option=""
     	                echo "WARNING : This copy of RSYNC may not support certain Mac OS X meta-data." |  tee -ai $logFile
@@ -1107,21 +1107,21 @@ if [ "$check_local_system" == "YES" ] ; then
 
 		else
 			# Check if we are accepting the standard version of rsync
-			# The standard version of rsync on the local machine is fine and or 
+			# The standard version of rsync on the local machine is fine and or
 			# the standard version on the remote machine is fine for an SSH Backup
 			if [ "$accept_default_rsync_darwin" == "YES" ] && [ ${installed_rsync_version_number_major} -le 2 ] ; then
 				# The standard version of rsync is fine therefore lets set the preserver extended attributs option
 				# for use with the standard version of rsync that shipped with this version of darwin. This can be abbriviated with -E
 				# note that some extended-attributes with this option will take up extra space beacuase the standard version of rsync
-				# is not able to hard link the resoruce forks for some files. 
+				# is not able to hard link the resoruce forks for some files.
 				#hardlink_option="--extended-attributes"
                 echo "WARNING : This copy of RSYNC may not support certain Mac OS X meta-data."
 				hardlink_option="-E"
 				#hardlink_option="-NHAXEx --protect-args --fileflags --force-change"
-			fi	
-			
+			fi
+
 		fi
-		
+
     fi
 fi
 
@@ -1151,7 +1151,7 @@ if [ "$showProgress" == "YES" ] ; then
 
     	#options="--protocol=28 --rsync-path=${ssh_rsync_path_remote} --stats -az ${hardlink_option} --showtogo -e ssh --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
         options="--rsync-path=${ssh_rsync_path_remote} ${change_options} --stats -az ${hardlink_option} --showtogo --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
-        
+
     else
 	   #nonSSH options
 
@@ -1204,13 +1204,13 @@ if [ "$createLinks" == "NO" ] ; then
 		#time /usr/local/bin/rsync $options $sshSource:"$backupSource" "$backupDestCRotTemp" | tee -ai $logFile
 		time ${ssh_rsync_path_local} $options $sshSource:"$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
 
-		
+
 	else
-		#Source is locally available	
+		#Source is locally available
 		#time /usr/local/bin/rsync $options "$backupSource" "$backupDestCRotTemp" | tee -ai $logFile
 	 	time ${rsync_path_local} $options "$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
 	fi
-	
+
 else
 	# Create Links
 	echo "Creating Links" | tee -ai $logFile
@@ -1221,12 +1221,12 @@ else
 		time ${ssh_rsync_path_local} $options --link-dest="$linkDest" $sshSource:"$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
 
 	else
-		#Source is locally available	
+		#Source is locally available
 		#time /usr/local/bin/rsync $options --link-dest="$linkDest" "$backupSource" "$backupDestCRotTemp" | tee -ai $logFile
 		time ${rsync_path_local} $options --link-dest="$linkDest" "$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
 	fi
 
-	
+
 fi
 
 
@@ -1244,18 +1244,18 @@ backupResult=`cat $logFile | tail -n 1 | grep "speedup" | awk '{ print $5 }'`
 backupResultRsyncErrorCheck=`cat $logFile | tail -n 15 | grep "rsync error"`
 
 # Check the data trasfer was not interupted - During This Sync
-if [ "$backupResult" != "speedup" ] ; then 
-        
+if [ "$backupResult" != "speedup" ] ; then
+
     backup_status="FIALED"
-        
-	echo "" | tee -ai $logFile    
+
+	echo "" | tee -ai $logFile
 	echo "WARNING! : Data Transfer Interrupted" | tee -ai $logFile
-	
+
 	if [ "$post_actions_on_backup_error" == "YES" ] ; then
         # We are going to run post actions even though the backup has failed
         perform_post_action_scripts
     fi
-	
+
 	send_mail_log
 
 	# Remove the backup lock file - probably not required - this will be handled by the trap
@@ -1266,22 +1266,22 @@ fi
 
 # Check that RSYNC did not encouter any errors - Within 15 lines of logfile
 if [ "$backupResultRsyncErrorCheck" != "" ] ; then
-        
+
     backup_status="FIALED"
-        
-	echo "" | tee -ai $logFile  
+
+	echo "" | tee -ai $logFile
 	echo "WARNING! : RSYNC Encountered Errors" | tee -ai $logFile
-	
+
 	if [ "$post_actions_on_backup_error" == "YES" ] ; then
         # We are going to run post actions even though the backup has failed
         perform_post_action_scripts
     fi
-	
+
     send_mail_log
-    
+
     # Remove the backup lock file - probably not required - this will be handled by the trap
     rm -f "$backup_lock_file_absolute_path"
-    exit -1     
+    exit -1
 fi
 
 
@@ -1291,7 +1291,7 @@ if [ $numRotations -ge 2 ] ; then
     echo "" | tee -ai $logFile
 	echo "Rotating Backups..." | tee -ai $logFile
 	sleep 7
-	
+
 	# Setup Rotation Parameters
 	locA=$[$numRotations-2]
 	locB=$[$numRotations-1]
@@ -1333,14 +1333,14 @@ mv "$backupDestCRotTemp" "$backupDestCRot"
 if [ $? != 0 ] ; then
 	echo "ERROR! : Performing Atomic Swap" | tee -ai $logFile
 	backup_status="FIALED"
-	
+
     if [ "$post_actions_on_backup_error" == "YES" ] ; then
         # We are going to run post actions even though the backup has failed
         perform_post_action_scripts
     fi
 
     send_mail_log
-    
+
     # Remove the backup lock file - probably not required - this will be handled by the trap
     rm -f "$backup_lock_file_absolute_path"
     exit -1
@@ -1352,7 +1352,7 @@ perform_post_action_scripts
 
 
 # Report if the Backup was Sccessfull.
-if [ "${backup_status}" == "SUCCESS" ] ; then 
+if [ "${backup_status}" == "SUCCESS" ] ; then
 	echo "Backup Completed Successfully" | tee -ai $logFile
 fi
 
@@ -1378,23 +1378,23 @@ fi
 
 if [ "$sendGrowlNotification" == "YES" ] ; then
 
-        # Set Growl Out Location 
+        # Set Growl Out Location
         growl_out_location="/usr/sbin/growlout"
 
         echo "Sending Growl Notification..."
-        
+
         if [ "$useSSH" == "YES" ] ; then
             ssh $sshSource "$growl_out_location"
         fi
         if [ "$useSSH" == "NO" ] ; then
-			# Check growlout is installed 
+			# Check growlout is installed
 			if [ -f "$growl_out_location" ] ; then
             	"/usr/sbin/growlout"
 			else
 				echo "   WARNING! : Growl out was not installed at : $growl_out_location"
 			fi
         fi
-        
+
 fi
 
 

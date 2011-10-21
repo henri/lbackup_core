@@ -16,16 +16,16 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##       This software is licenced under 	    ##
 ##                  the GNU GPL.                ##
 ##                                              ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions available from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################    
+##################################################
 
 
 #
-#  This is a script which mounts a disk image volume 
+#  This is a script which mounts a disk image volume
 #
 #  Note : If you are using rotating backups then make
 #         sure you set the permissions on the image
@@ -80,12 +80,12 @@ function perform_backup {
 	fi
 
     # Check a Image Volume is Mounted for a Second Time
-	if [ "$dfResult" != "" ] ; then 
+	if [ "$dfResult" != "" ] ; then
 		echo "    Backup Image Volume Available" | tee -ai $logFile
 
 		# Exit and Continue With Other Scripts
 		exit ${SCRIPT_SUCCESS}
-		
+
 	else
 	    # Report that Backup Image Volume is Unavialible and that backup should be aborted.
 		echo "    Unable to Mount Encrypted Volume" | tee -ai $logFile
@@ -96,13 +96,13 @@ function perform_backup {
 
 # Check backupVolume is availible
 dfResult=`df | grep $backupVolume`
-if [ "$dfResult" != "" ] ; then 
+if [ "$dfResult" != "" ] ; then
 	echo "    Backup Volume Available" | tee -ai $logFile
 	perform_backup
-else 
+else
     echo "    Unable to Detect Backup Drive" | tee -ai $logFile
     exit ${SCRIPT_HALT}
 fi
 
-	
+
 exit 0

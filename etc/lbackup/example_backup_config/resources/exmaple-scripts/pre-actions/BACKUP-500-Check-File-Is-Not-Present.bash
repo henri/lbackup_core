@@ -21,16 +21,16 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##                                              ##
 ##           Lucid Inormatin Systems.           ##
 ##						                        ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions availible from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################     
+##################################################
 
 
 #
-#  This is a simple script which checks for that a file is 
+#  This is a simple script which checks for that a file is
 #  not present. If the file exists then the backup will be stopped.
 #  If the file is not detectd then the backup will continue.
 #

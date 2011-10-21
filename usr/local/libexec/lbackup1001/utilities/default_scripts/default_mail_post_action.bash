@@ -20,12 +20,12 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##       distributed under liecence from     	##
 ##           Lucid Inormatin Systems.           ##
 ##						                        ##
-##	     The developer of this software	        ## 
+##	     The developer of this software	        ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions availible from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################    
+##################################################
 
 
 
@@ -47,17 +47,17 @@ ACTION_PREFIX="MAIL"
 
     # Export Appropriate varibles to the scripts
     export backupConfigurationFolderPath  # should have been done previousely anyway
-    
+
     # Export the Script Return Codes
     export SCRIPT_SUCCESS
     export SCRIPT_WARNING
     export SCRIPT_HALT
-    
+
     # Export Script Varibles
     export ACTION_DIRECTORY
     export ACTION_PREFIX
-    
-    
+
+
 
 #################################
 ##      INTERNAL VARIBLES      ##
@@ -74,46 +74,46 @@ final_exit_value=${SCRIPT_SUCCESS}
 
 # Directory Check
 if [ -d "${ACTION_DIRECTORY}" ]; then
-    
+
     # Perform valid actions with valid prefix
     for action in "${ACTION_DIRECTORY}/${ACTION_PREFIX}"* ; do
-        
+
         # Check Action is Executable
         if [ -s "${action}" -a -x "${action}" ]; then
-            
+
             # Export this actions name
             action_name=`basename "${action}"`
             export action_name
-            
+
             # Write Post Mail Action Detils to Log
             echo "Performing Post-Action : ${action_name}" | tee -ai $logFile
-            
+
             # Perform Action, passing all command line arguments
-            
+
             # =================================================== #
                 "${action}" $*
                 action_exit_value=$?
             # =================================================== #
-            
+
             # Check the Action Succeded
             if [ ${action_exit_value} != ${SCRIPT_SUCCESS} ]; then
-            
+
                 # Check for "Halt" Exit Value
                 if [ ${action_exit_value} == ${SCRIPT_HALT} ]; then
                   final_exit_value=${SCRIPT_HALT}
                   # Stop Executing Actions
                   exit ${final_exit_value}
                 fi
-                
+
                 # Check for "Warning" Exit Value
                 if [ ${action_exit_value} == ${SCRIPT_WARNING} ]; then
                     # Store Warning Value for Return (Unless a Hault Value is Found Later)
-                    final_exit_value=${SCRIPT_WARNING}                
+                    final_exit_value=${SCRIPT_WARNING}
                 else
                     # If the exit value is not HALT, WARNING or SUCCESS, report the last odd exit value
                     final_exit_value=${action_exit_value}
                 fi
-            fi  
+            fi
         fi
     done
 fi

@@ -22,12 +22,12 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##                                              ##
 ##           Lucid Inormatin Systems.           ##
 ##						                        ##
-##	      The developer of this software	    ## 
+##	      The developer of this software	    ##
 ##    maintains rights as specified in the      ##
 ##   Lucid Terms and Conditions availible from  ##
 ##            www.lucidsystems.org     		    ##
 ##                                              ##
-##################################################     
+##################################################
 
 
 
@@ -44,7 +44,7 @@ fi
 # Note : This is implimentiation is dependent upon exception being raised by hdiutil
 #        some mount points may not support features required to raise the exceptions.
 hdiutil imageinfo "${local_image}" 1> /dev/null 2> /dev/null
-if [ $? != 0 ] ; then 
+if [ $? != 0 ] ; then
 	echo "    ERROR! : Disk image is mounted or is not available." | tee -ai $logFile
 	exit ${SCRIPT_HALT}
 fi
@@ -52,13 +52,13 @@ fi
 # Check to see if the image is mounted (locally)
 hdiutil_mounted_status=`hdiutil info | grep "image-path" | grep "${local_image}"`
 
-if [ -e "${local_image}" ] && [ "${hdiutil_mounted_status}" == "" ] ; then 
-	exit ${SCRIPT_SUCCESS}	
+if [ -e "${local_image}" ] && [ "${hdiutil_mounted_status}" == "" ] ; then
+	exit ${SCRIPT_SUCCESS}
 else
 	echo "    ERROR! : Disk image is mounted or is not available." | tee -ai $logFile
 	exit ${SCRIPT_HALT}
 fi
 
-	
+
 
 
