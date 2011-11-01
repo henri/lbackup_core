@@ -10,7 +10,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##  Ensure Disk Usage is Bleow a Set Percentage ##
 ##      	         (C)2008                    ##
 ##						                        ##
-##	              Version 0.0.3 	            ##
+##	              Version 0.0.4 	            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -53,7 +53,11 @@ report_disk_utilization_of_the_backup_volume="YES"
 
 # You may wish to change this slightly if you want to check a differnet drive or an OS other than Mac OS X.
 # If you are dealing with disk images altering this further may be useful. 
-backupDestVolume=`echo "${backupDest}" | awk -F "/" '{ print $1"/"$2"/"$3}'`
+if [ "`echo \"${backupDest}\" | cut -c -9`" != "/Volumes/" ] ; then
+	backupDestVolume="/"
+else
+	backupDestVolume=`echo "${backupDest}" | awk -F "/" '{ print $1"/"$2"/"$3}'`
+fi
 
 backupDestVolume_diskusage_percentage=0
 
@@ -67,7 +71,7 @@ fi
 
 ## Functions 
 function calculate_disk_usage_for_backup_destination_volume {
-    backupDestVolume_diskusage_percentage=`df -h | grep "${backupDestVolume}" | awk '{print $5}' | awk -F "%" '{print $1}'`
+    backupDestVolume_diskusage_percentage=`df -h "${backupDestVolume}" | tail -n 1 | awk '{print $5}' | awk -F "%" '{print $1}'`
     if [ $? != 0 ] ; then
         echo "    ERROR! : Unable to calculate percentage disk usage on the backup destination volume." | tee -ai $logFile
         echo "             ${backupDestVolume}" | tee -ai $logFile
