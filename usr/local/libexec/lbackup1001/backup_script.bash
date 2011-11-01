@@ -124,7 +124,8 @@ function get_absolute_path {
     # check for ./ at the start
     local dot_slash_test=`echo "$quoted_absolute_path" | grep '^./'`
     if [ "$dot_slash_test" != "" ]  ; then
-        quoted_absolute_path=`basename $quoted_absolute_path`
+		# This is a little overkill. However, it should do the trick.
+        quoted_absolute_path="`pwd`/`dirname \"$quoted_absolute_path\" | cut -c 3-`/`basename \"$quoted_absolute_path\"`"
     fi
     
     # find absolute path (parent path times ".." will not be striped path items)
