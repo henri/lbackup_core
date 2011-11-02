@@ -6,7 +6,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##						                        ##
 ##	         Lucid Information Systems 	        ##
 ##					                            ##
-##	            CLEAR RSYNC SESSION             ##
+##	            LOG SYSTEM DISK USAGE           ##
 ##      	          (C)2009                   ##
 ##						                        ##
 ##		           Version 0.0.2 	            ##
@@ -25,8 +25,8 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 
 #
-#  This is a script will provide informaton regarding 
-#  the disk usage on the system.
+#  This is a script will provide and log informaton regarding 
+#  the disk usage on the system relating to the backup.
 #
 
 
