@@ -2,29 +2,29 @@
 PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 
-##################################################
-##						                        ##
-##	         Lucid Information Systems   	    ##
-##						                        ##
-##	        Report Disk Usage Difference        ##
-##      	         (C)2009         		    ##
-##						                        ##
-##		          Version 0.0.1              	##
-##                                              ##
-##           Developed by Henri Shustak         ##
-##                                              ##
-##        This software is licensed under 	    ##
-##                  the GNU GPL.                ##
-##					                            ##
-##	   The developer of this software           ## 
-##     maintains rights as specified in the     ##
-##   Lucid Terms and Conditions available from  ##
-##          http://www.lucidsystems.org     	##
-##                                              ##
-##        Part of the LBackup project           ##
-##           http://www.lbackup.org             ##
-##                                              ##
-##################################################    
+######################################################
+##                                                  ##
+##              Lucid Information Systems           ##
+##                                                  ##
+##            Report Disk Usage Difference          ##
+##                      (C)2009                     ##
+##                                                  ##
+##                   Version 0.0.2                  ##
+##                                                  ##
+##            Developed by Henri Shustak            ##
+##                                                  ##
+##          This software is licensed under         ##
+##                    the GNU GPL.                  ##
+##                                                  ##
+##            The developer of this software        ##
+##        maintains rights as specified in the      ##
+##     Lucid Terms and Conditions availible from    ##
+##               www.lucidsystems.org               ##
+##                                                  ##
+##           Part of the LBackup project            ##
+##              http://www.lbackup.org              ##
+##                                                  ##
+######################################################
 
 
 #
@@ -157,17 +157,17 @@ calculate_differnece_in_snapshot_size_in_megabytes
 # report the size of the most recent backup
 if [ "${report_the_backup_size_of_first_the_most_recent_snapshot}" == "YES" ] ; then
     # report back regarding the disk utilization of the most recent backup
-    echo "        This most recent snapshot consumes approximately $first_most_recent_backup_snapshot_disk_usage MB of disk space (excluding hard linking)."| tee -ai $logFile
+    echo "    This most recent snapshot consumes approximately $first_most_recent_backup_snapshot_disk_usage MB of disk space (excluding hard linking)."| tee -ai $logFile
 fi
 
 # report in english the difference in size between the most recent backup and the previous backup
 if [ ${backup_snapshots_same_size} == 1 ] ; then
-    echo "        The previous and the most recently completed snapshots share approximately the same disk utilization."
+    echo "    The previous and the most recently completed snapshots share approximately the same disk utilization."
 else
     if [ $positive_difference == 1 ] ; then 
-        echo "        Compared with the previous snapshot approximately ${difference_between_snapshots} MB of additional disk usage is required." | tee -ai $logFile
+        echo "    Compared with the previous snapshot approximately ${difference_between_snapshots} MB of additional disk usage was required." | tee -ai $logFile
     else
-        echo "        This snapshot disk usage is approximately ${difference_between_snapshots_multiplied_by_negitive_one} MB smaller than the previous backup." | tee -ai $logFile
+        echo "    This snapshot disk usage is approximately ${difference_between_snapshots_multiplied_by_negitive_one} MB smaller than the previous backup." | tee -ai $logFile
     fi
 fi
 
