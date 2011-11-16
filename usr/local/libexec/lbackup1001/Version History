@@ -11,6 +11,10 @@
 
 	Version 0.9.8r5
 
+		Updated the Sync-Sparse-Image-to-Remote-Server
+		script to include additional options including
+		checksums, bandwidth limiting and statistics.
+
 		Added an additional example pre action script
 		which simply reports the disk usage of the 
 		backup destination disk.	

@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##     Sync Sparse Disk Image to Remote Server      ##
 ##      	           (C)2005		                ##
 ##						                            ##
-##		            Version 0.1.5 	                ##
+##		            Version 0.1.6 	                ##
 ##                                                  ##
 ##            Developed by Henri Shustak            ##
 ##                                                  ##
@@ -45,6 +45,8 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 # Do not add spaces etc into any paths. This script will probably break.
 
 
+# -----------------------------------------------------------------------------------------------------------------
+
 
 ## Various settings which you will want to alter before running this script.
 local_sparse_bundle_to_sync="/path/to/my_backup.sparsebundle"
@@ -64,14 +66,27 @@ run_sync_as=
 export_ssh_agent_command=
 # export SSH_AUTH_SOCK=/tmp/path/to/ssh.socket
 
+# Log disk image syncronization statisitcs ("YES"/"NO")
+display_statistics_human_readable="NO"
 
-# intenral varibles just leave alone
+# Checksum transfer ("YES"/"NO"). If set to "YES" then the --checksum option will be used for rsync transfer.
+use_checksums_for_transfer="NO" 
+
+# Limit I/O bandwidth in KBytes per second. If set to "0" or "" then I/O bandwidth will not be limited.
+bandwidth_limit_ammount="0"
+
+
+# -----------------------------------------------------------------------------------------------------------------
+
+
+# Intenral varibles just leave alone
 path_to_bash="/bin/bash"
 rsync_command=""
 hdiutil_mounted_status=""
 local_system_kind=""
 remote_system_kind=""
 export_ssh_agent_command_with_colon=""
+additional_rsync_options=""
 
 # Preflight Checks 
 if [ "${backup_status}" != "SUCCESS" ] ; then
@@ -93,6 +108,20 @@ else
     remote_system_kind=`su -l ${run_sync_as} -c "${export_ssh_agent_command_with_colon} ssh ${remote_server_user}@${remote_server_address} \"uname\""`
 fi
 
+# Check the bandwidth limit is a positive interger (quite basic apporach) - may need to be improved further to catch other edge cases.
+function exit_with_bandwidth_limit_ammount_value_error {
+	echo "    ERROR! : Ensure that bandwidth_limit_ammount is set to a positive integer to limit I/O bandwidth in KBytes per second." | tee -ai $logFile
+	echo "             If you do not wish to limit I/I bandwidth for the transfer then use a value of \"0\"." | tee -ai $logFile
+	exit ${SCRIPT_WARNING}
+}
+if [ "${bandwidth_limit_ammount}" != "" ] ; then
+	if ! [ ${bandwidth_limit_ammount} -eq ${bandwidth_limit_ammount} 2>/dev/null ] ; then 
+		exit_with_bandwidth_limit_ammount_value_error
+	fi
+	if [ ${bandwidth_limit_ammount} -lt 0 ] || [ "${bandwidth_limit_ammount}" == "-0" ]; then
+		exit_with_bandwidth_limit_ammount_value_error
+	fi
+fi
 
 # Check this and the remote system are both Mac OS X Systems
 if [ "${local_system_kind}" == "Darwin" ] && [ "${remote_system_kind}" == "Darwin" ] ; then
@@ -148,15 +177,26 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     # Use rsync to copy / update the remote file
     echo "    Syncing disk image to remote server..." | tee -ai $logFile
     
+	# Set additional rsync options based upon scritp configuration settings
+	if [ "${display_statistics_human_readable}" == "YES" ] ; then
+		additional_rsync_options=" -h --stats${additional_rsync_options}"
+	fi
+	if [ "${use_checksums_for_transfer}" == "YES" ] ; then
+		additional_rsync_options=" --checksum${additional_rsync_options}"
+	fi
+	if [ "$bandwidth_limit_ammount" != "" ] ; then
+		additional_rsync_options=" --bwlimit=$bandwidth_limit_ammount${additional_rsync_options}"
+	fi
+	
     if [ "${remote_system_kind}" == "Darwin" ] ; then
         # Command if remote system is Darwin (with rsync patch)
-        export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aNHAXEx --delete --protect-args --fileflags --force-change ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"
+        export rsync_command="${path_to_rsync}${additional_rsync_options} --rsync-path=${remote_path_to_rsync} -aNHAXEx --delete --protect-args --fileflags --force-change ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"
     fi
     
     if [ "${remote_system_kind}" == "Linux" ] ; then
         # Command if remote system is Linux
         #rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete \"${local_sparse_bundle_to_sync}\" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}"  
-        export rsync_command="${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"  
+        export rsync_command="${path_to_rsync}${additional_rsync_options} --rsync-path=${remote_path_to_rsync} -aHAEx --delete ${local_sparse_bundle_to_sync} ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination}"  
         #${path_to_rsync} --rsync-path=${remote_path_to_rsync} -aHAEx --delete "${local_sparse_bundle_to_sync}" ${remote_server_user}@${remote_server_address}:${remote_sparse_bundle_destination} 2>&1 | sed s'/^/    /' | tee -ai ${logFile}
     fi
 
