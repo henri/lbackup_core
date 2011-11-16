@@ -3,25 +3,25 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 
 ######################################################
-##													##
-##				Lucid Information Systems			##
-##													##
-##		Sync Sparse Disk Image to Remote Server		##
-##						(C)2005						##
-##													##
-##					 Version 0.1.6					##
-##													##
-##			   Developed by Henri Shustak			##
-##													##
-##			This software is licensed under			##
-##					  the GNU GPL.					##
-##													##
-##			The developer of this software			## 
-##		  maintains rights as specified in the		##
-##	   Lucid Terms and Conditions availible from	##
-##				 www.lucidsystems.org				##
-##													##
-######################################################    
+##                                                  ##
+##              Lucid Information Systems           ##
+##                                                  ##
+##       Sync Sparse Disk Image to Remote Server    ##
+##                      (C)2005                     ##
+##                                                  ##
+##                   Version 0.1.6                  ##
+##                                                  ##
+##            Developed by Henri Shustak            ##
+##                                                  ##
+##          This software is licensed under         ##
+##                    the GNU GPL.                  ##
+##                                                  ##
+##            The developer of this software        ##
+##        maintains rights as specified in the      ##
+##     Lucid Terms and Conditions availible from    ##
+##               www.lucidsystems.org               ##
+##                                                  ##
+######################################################
 
 
 
