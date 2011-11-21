@@ -216,7 +216,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     
     if [ $rsync_return_value != 0 ] ; then
         echo "    WARNING! : Occurred during disk image sync." | tee -ai $logFile
-        echo "               Rsync Exit Value : $rsync_return_value" | tee -ai $logFile
+        echo "               Rsync exit value : $rsync_return_value" | tee -ai $logFile
         exit ${SCRIPT_WARNING}
     else
         echo "    Remote server sparse bundle synchronized." | tee -ai $logFile
