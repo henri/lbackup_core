@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##             Version 0.9.8r5-alpha9           ##
+##            Version 0.9.8r5-alpha10           ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -1271,7 +1271,7 @@ if [ "$check_local_system" == "YES" ] ; then
                             echo "           /usr/sbin/vsdbutil -a \"$backupDestVolume\"" | tee -ai $logFile
 							echo "" | tee -ai $logFile
 							echo "           Check that the destination file system is directly attached storage or is a virtual file system." | tee -ai $logFile
-							echo "           Network based file systems are unsupported destinations of backup sets within LBackup." | tee -ai $logFile
+							echo "           Network based file systems are unsupported backup destinations (for LBackup backup sets)." | tee -ai $logFile
 							if [ "$abort_if_permisions_on_volume_not_set" == "YES" ] ; then
 								echo "" | tee -ai $logFile
 								echo "           Default configuration is to abort backup, if the permissions on a volume"  | tee -ai $logFile
