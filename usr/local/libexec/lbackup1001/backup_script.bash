@@ -1264,15 +1264,19 @@ if [ "$check_local_system" == "YES" ] ; then
                             # It is important to check for enabled. This is because if the permissions have not been explicitly
                             # set then the test will return the quoted volume rather than enabled or disabled.
                             echo "WARNING! : Permissions are disabled on backup destination volume." | tee -ai $logFile
+							echo "" | tee -ai $logFile
                             echo "           It is recommended that permissions on the destination volume are enabled." | tee -ai $logFile
                             echo "           Failure to enable permissions will most likely result in the hard link system failing." | tee -ai $logFile
-                            echo "           Permissions may be enabled by issuing the following command as root :" | tee -ai $logFile
+                            echo "           Permissions may be enabled for most local file systems by issuing the following command as root :" | tee -ai $logFile
                             echo "           /usr/sbin/vsdbutil -a \"$backupDestVolume\"" | tee -ai $logFile
+							echo "" | tee -ai $logFile
+							echo "           Check that the destination file system is directly attached storage or is a virtual file system." | tee -ai $logFile
+							echo "           Network based file systems are unsupported destinations of backup sets within LBackup." | tee -ai $logFile
 							if [ "$abort_if_permisions_on_volume_not_set" == "YES" ] ; then
-								echo ""
+								echo "" | tee -ai $logFile
 								echo "           Default configuration is to abort backup, if the permissions on a volume"  | tee -ai $logFile
 								echo "           have not been set. You may override this setting in your configuration file."  | tee -ai $logFile
-								echo ""
+								echo "" | tee -ai $logFile
 								echo "           Backup canceled." | tee -ai $logFile
 								send_mail_log
 								exit -1
