@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##       Sync Sparse Disk Image to Remote Server    ##
 ##                      (C)2005                     ##
 ##                                                  ##
-##                   Version 0.1.6                  ##
+##                   Version 0.1.7                  ##
 ##                                                  ##
 ##            Developed by Henri Shustak            ##
 ##                                                  ##
@@ -59,11 +59,11 @@ remote_path_to_rsync="/usr/local/bin/rsync_v3.0.7"
 ## SSH Run As Other User Settings
 # leave these blank for the user who executes the script.
 # run_sync_as=otheruser
-run_sync_as=
+run_sync_as=""
 
 # If using an SSH agent the export command to the socket
 # export_ssh_agent_command="export SSH_AUTH_SOCK=/tmp/path/to/ssh.socket"
-export_ssh_agent_command=
+export_ssh_agent_command=""
 # export SSH_AUTH_SOCK=/tmp/path/to/ssh.socket
 
 # Log disk image syncronization statisitcs ("YES"/"NO")
@@ -74,6 +74,10 @@ use_checksums_for_transfer="NO"
 
 # Limit I/O bandwidth in KBytes per second. If set to "0" or "" then I/O bandwidth will not be limited.
 bandwidth_limit_ammount="0"
+
+# Set modify window. If set to "0" or "" then the modify window will require an exact match.
+modify_window_ammount="0"
+
 
 
 # -----------------------------------------------------------------------------------------------------------------
@@ -177,6 +181,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     # Use rsync to copy / update the remote file
     echo "    Syncing disk image to remote server..." | tee -ai $logFile
     
+
 	# Set additional rsync options based upon scritp configuration settings
 	if [ "${display_statistics_human_readable}" == "YES" ] ; then
 		additional_rsync_options=" -h --stats${additional_rsync_options}"
@@ -187,6 +192,10 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
 	if [ "$bandwidth_limit_ammount" != "" ] ; then
 		additional_rsync_options=" --bwlimit=$bandwidth_limit_ammount${additional_rsync_options}"
 	fi
+	if [ "$modify_window_ammount" != "" ] ; then
+		additional_rsync_options=" --modify-window=$modify_window_ammount${additional_rsync_options}"
+	fi
+		
 	
     if [ "${remote_system_kind}" == "Darwin" ] ; then
         # Command if remote system is Darwin (with rsync patch)
