@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##       Sync Sparse Disk Image to Remote Server    ##
 ##                      (C)2005                     ##
 ##                                                  ##
-##                   Version 0.1.7                  ##
+##                   Version 0.1.8                  ##
 ##                                                  ##
 ##            Developed by Henri Shustak            ##
 ##                                                  ##
@@ -216,8 +216,7 @@ if [ -d "${local_sparse_bundle_to_sync}" ] && [ "${hdiutil_mounted_status}" == "
     
     if [ "${run_sync_as}" == "" ] ; then
 	    ${rsync_command} 2>&1 | sed s'/^/    /' | sed s'/^/    /' | tee -ai ${logFile}
-	    exit ${PIPESTATUS[0]}
-        rsync_return_value=$?
+        rsync_return_value=${PIPESTATUS[0]}
     else
         sudo su -l ${run_sync_as} -c "${export_ssh_agent_command_with_colon} ${rsync_command} 2>&1 | sed s'/^/    /' | sed s'/^/    /' | tee -ai ${logFile} ; exit ${PIPESTATUS[0]}"
         rsync_return_value=$?
