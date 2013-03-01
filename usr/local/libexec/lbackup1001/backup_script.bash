@@ -951,7 +951,7 @@ fi
 # SSH Test - If host device is operating though NAT
 if ( [ "$SSHTest" == "YES" ] && [ "$useSSH" == "YES" ] ) ; then
     echo "Testing SSH Connection..." | tee -ai $logFile
-    SSHTest=`ssh $sshSource "##--LBackup_SSH_Test--## ; exit 0"`
+    SSHTest=`ssh $sshSource "##--LBackup_SSH_Test--## ; exit 0" 2> /dev/null`
     SSHTestResult=${?}
     if ( [ "$SSHTest" != "This wrapper only supports rsync" ] && [ $SSHTestResult != 0 ] ); then
            echo "$SSHTest"  | tee -ai $logFile
