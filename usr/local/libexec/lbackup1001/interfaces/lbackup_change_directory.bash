@@ -54,6 +54,8 @@ function change_directory {
                 echo "your BASH initialization file."
                 echo ""
                 echo "Personal BASH initialization files : ~/.bashrc ~/.profile"
+				echo ""
+				echo "Also please check that you are using the BASH shell."
                 echo ""
                 echo ""
                 return -127
