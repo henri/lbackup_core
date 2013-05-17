@@ -1308,17 +1308,17 @@ if [ "$check_local_system" == "YES" ] ; then
             # Check if there was a custom_rsync_path_local_darwin option set in the configuration
             if [ "${custom_rsync_path_local_darwin_overidden_by_configuration}" == "YES" ] ; then
                 # Provide feed back that the specified custom_rsync_path_local_darwin option was not able to be found on the system
-                echo ""
-                echo "ERROR! : Specified custom version of rsync was not found on this system."
-                echo ""
-                echo "         Configuration specified the following : "
-                echo "             custom_rsync_path_local_darwin=${custom_rsync_path_local_darwin}"
-                echo ""
-                echo "         Check that this specified custom version of rsync is installed at"
-                echo "         the absolute path which is specified within the configuration."
-                echo ""
+                echo "" | tee -ai $logFile
+                echo "ERROR! : Specified custom version of rsync was not found on this system." | tee -ai $logFile
+                echo "" | tee -ai $logFile
+                echo "         Configuration specified the following : " | tee -ai $logFile
+                echo "             custom_rsync_path_local_darwin=${custom_rsync_path_local_darwin}" | tee -ai $logFile
+                echo "" | tee -ai $logFile
+                echo "         Check that this specified custom version of rsync is installed at" | tee -ai $logFile
+                echo "         the absolute path which is specified within the configuration." | tee -ai $logFile
+                echo "" | tee -ai $logFile
 				echo "         Backup canceled." | tee -ai $logFile
-				echo ""
+				echo "" | tee -ai $logFile
 				send_mail_log
 				exit -1
             fi
