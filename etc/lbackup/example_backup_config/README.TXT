@@ -24,7 +24,7 @@ Before using LBackup, ensure that you have understood your backup policy. This w
 
 For assistance with, the setup of LBackup please refer to the online documentation or alternatively, you may wish to contact Lucid Information Systems.
 
-Please submit patches, bug reports and suggestions to the LBackup mailing lists : http://www.lucidsystems.org/tools/lbackup/lists/
+Please submit patches, bug reports and suggestions to the LBackup mailing lists : http://www.lbackup.org/mailing_lists/
 
 If you have a security disclosure then please contact Lucid directly via the following website : http://www.lucidsystems.org/contact/
 
