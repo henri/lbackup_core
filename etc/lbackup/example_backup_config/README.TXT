@@ -8,10 +8,10 @@ LBackup Home (online documentation) :
 http://www.lbackup.org
 
 For instructions on setting up your first test backup visit : 
-http://lucidsystems.org/tools/lbackup/instructions/setup
+http://www.lbackup.org/configuring_a_basic_backup
 
 To signup to the LBackup mailing lists vista the URL below: 
-http://www.lucidsystems.org/tools/lbackup/lists/
+http://www.lbackup.org/mailing_lists/
 
 Lucid offers information storage and processing consultation and support services. Including support for LBackup : 
 http://www.lucidsystems.org
