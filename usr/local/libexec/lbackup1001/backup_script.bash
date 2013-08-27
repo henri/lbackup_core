@@ -471,6 +471,10 @@ backupConfigurationsVersionSet="NO"
 numeric_ids_enabled=""
 default_numeric_ids_enabled="NO"
 
+# preservation of hard links (--hard-links) configuration
+hardlinks_enabled=""
+default_hardlinks_enabled="NO"
+
 # checksum enabled (--checksum) configuration 
 checksum_enabled=""
 default_checksum_enabled="NO"
@@ -639,6 +643,11 @@ if [ "$numeric_ids_enabled" == "" ] ; then
     numeric_ids_enabled="$default_numeric_ids_enabled"
 fi
 
+# Check if the preservation of hard links has been set within the configuration file
+if [ "$hardlinks_enabled" == "" ] ; then 
+    hardlinks_enabled="$default_hardlinks_enabled"
+fi
+
 # Check if the numeric checksum option has been enabled within the configuration file
 if [ "$numeric_ids_enabled" == "" ] ; then 
     checksum_enabled="$default_checksum_enabled"
@@ -779,6 +788,10 @@ fi
 
 if [ "${numeric_ids_enabled}" == "YES" ] ; then
 	numeric_id_options="--numeric-ids"
+fi
+
+if [ "$hardlinks_enabled" == "YES" ] ; then
+	preserve_source_hardlink_options="--hard-links"
 fi
 
 if [ "${checksum_enabled}" == "YES" ] ; then
@@ -1571,12 +1584,12 @@ if [ "$showProgress" == "YES" ] ; then
     	#SSH options
 
     	#options="--protocol=28 --rsync-path=${ssh_rsync_path_remote} --stats -az ${hardlink_option} --showtogo -e ssh --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
-        options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} --stats -az ${hardlink_option} --showtogo --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
+        options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} ${preserve_hardlink_options} --stats -az ${hardlink_option} --showtogo --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
         
     else
 	   #nonSSH options
 
-        options="--rsync-path=${rsync_path_local} ${change_options} ${checksum_options} ${numeric_id_options} --stats -a ${hardlink_option} --showtogo --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
+        options="--rsync-path=${rsync_path_local} ${change_options} ${checksum_options} ${numeric_id_options} ${preserve_hardlink_options} --stats -a ${hardlink_option} --showtogo --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
 
     fi
 else
@@ -1585,13 +1598,13 @@ else
     	#SSH options
 
     	#options="--protocol=28 --rsync-path=${ssh_rsync_path_remote} --stats -az ${hardlink_option} -e ssh --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
-        options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} --stats -az ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
+        options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} ${preserve_source_hardlink_options} --stats -az ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
 
     else
 	   #nonSSH options
 
-        options="--rsync-path=${rsync_path_local} ${change_options} ${checksum_options} ${numeric_id_options} --stats -a ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
-
+        options="--rsync-path=${rsync_path_local} ${change_options} ${checksum_options} ${numeric_id_options} ${preserve_source_hardlink_options} --stats -a ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
+		
     fi
 fi
 

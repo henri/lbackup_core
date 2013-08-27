@@ -63,18 +63,23 @@
 		be detected.
 
 		Added configuration options for reporting of
-                of incomplete backups required time.
+        of incomplete backups required time.
 
 		Added configuration options for reporting of
-                timing relating to failed backups required 
+        timing relating to failed backups required 
 		time.
 
 		Added configuration options for reporting of
-                snapshot creation required time.
+        snapshot creation required time.
 
 		Added configuration options for reporting of
-                incomplete snapshot creation required time.
-
+        incomplete snapshot creation required time.
+				
+		Added options for the rsync --hard-link to the
+		LBackup configuration file. When enabled, this
+		allows preserviation of hard links within the
+		source tree.
+		
 		Added an example post action script which
 		which may be used to generate a link from
 		the backup destination directory to the 
