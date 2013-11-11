@@ -24,6 +24,9 @@ If you wish to build a .deb installer for use on debian based operating systems 
 Instructions for installing directly from source are available from the following URL : 
 <http://www.lbackup.org/source>
 
+Information relating to monitoring backups is availible from this URL : 
+<http://www.lbackup.org/monitoring_multiple_backup_logs>
+
 
   [1]: http://www.gnu.org/licenses/gpl.html
 
