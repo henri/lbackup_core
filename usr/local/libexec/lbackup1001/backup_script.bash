@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##            Version 0.9.8r5-alpha10           ##
+##            Version 0.9.8r5-alpha11           ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -412,6 +412,9 @@ custom_rsync_path_local_darwin=""
 default_custom_rsync_path_local_darwin="/usr/local/bin/rsync"
 custom_rsync_path_local_darwin_overidden_by_configuration="NO"
 
+# Ignore code 24 rsync - some files vanished before they could be transferred errors
+ignore_rsync_vanished_files=""
+default_ignore_rsync_vanished_files="NO"
 
 # Local System Check
 check_local_system=""
@@ -686,6 +689,11 @@ if [ "${disable_mailconfigpartner}" == "" ] ; then
     disable_mailconfigpartner="$default_disable_mailconfigpartner"
 fi
 
+# Check if we be ingnoring rsync vanished file errors
+if [ "ignore_rsync_vanished_files" == "" ] ; then
+  ignore_rsync_vanished_files="default_ignore_rsync_vanished_files"
+fi
+
 if [ "$disable_mailconfigpartner" == "YES" ] && [ "$email_and_archive_log_on_successful_backup" == "YES" ] ; then
         echo "WARNING! :  Error in the configuration file. Unable to follow configuration instructions." | tee -ai $logFile
         echo "            The \"email_and_archvie_log_on_sucessful_backup\" option is set to \"YES\"." | tee -ai $logFile
@@ -730,6 +738,10 @@ epoch_before_rsync_run=""
 epoch_after_rsync_run=""
 total_time_required_for_snapshot_in_seconds=""
 
+# Backup Results
+backupResult=""
+newBackupResult=""
+backupResultRsyncErrorCheck=""
 
 # Name of the Mail Script
 mailScriptName="maillog_script.bash"
@@ -1610,9 +1622,13 @@ fi
 
 
 
+#################################
+##   LBackup Specific Option   ##
+#################################
 
-
-
+if [ "${ignore_rsync_vanished_files}" == "YES" ] ; then
+	echo "LBackup is ignoring rsync vanished file warnnings..." | tee -ai $logFile
+fi
 
 
 
@@ -1684,8 +1700,17 @@ backupResult=`cat $logFile | tail -n 1 | grep "speedup" | awk '{ print $5 }'`
 backupResultRsyncErrorCheck=`cat $logFile | tail -n 15 | grep "rsync error"`
 
 # Check the data trasfer was not interupted - During This Sync
-if [ "$backupResult" != "speedup" ] ; then 
-    backup_status="FIALED"
+if [ "$backupResult" != "speedup" ] ; then
+	if [ "${ignore_rsync_vanished_files}" == "YES" ] ; then
+		# Not currenlty using rsync exit codes. Perhaps using the exit code from rsync would be a better approach?
+		new_backupResult=`cat $logFile | tail -n 2 | head -n 1 | grep "speedup" | awk '{ print $5 }'`
+		backupRsync_vanished_files_check_result=`cat $logFile | tail -n 1 | awk -F " at main.c" '{print $1}' | awk -F "rsync warning: " '{print $2}'`
+		if [ "${new_backupResult}" != "speedup" ] || [ "${backupRsync_vanished_files_check_result}" != "some files vanished before they could be transferred (code 24)" ] ; then
+			backup_status="FIALED"
+		fi
+	else
+    	backup_status="FIALED"
+	fi
 fi
 
 
