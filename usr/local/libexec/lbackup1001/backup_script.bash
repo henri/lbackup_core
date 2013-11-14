@@ -1622,17 +1622,15 @@ fi
 
 
 
+
+
 #################################
 ##   LBackup Specific Option   ##
 #################################
 
 if [ "${ignore_rsync_vanished_files}" == "YES" ] ; then
-	echo "LBackup is ignoring rsync vanished file warnnings..." | tee -ai $logFile
+	echo "Ignoring rsync vanished file warnings..." | tee -ai $logFile
 fi
-
-
-
-
 
 
 
