@@ -1,7 +1,7 @@
 
 
     LBACKUP - VERSION HISTORY 
-    ©2001-2011 ALL RIGHTS RESERVED - LUCID INFORMATION SYSTEMS
+    ©2001-2013 ALL RIGHTS RESERVED - LUCID INFORMATION SYSTEMS
     www.lucidsystems.org
 
     -----------------------------------------------------
@@ -9,287 +9,292 @@
     -----------------------------------------------------
 
 
-	Version 0.9.8r5
+     Version 0.9.8r5
 
-		Updated the Sync-Sparse-Image-to-Remote-Server
-		script to include additional options including
-		checksums, bandwidth limiting and statistics.
+	Updated the Sync-Sparse-Image-to-Remote-Server
+	script to include additional options including
+	checksums, bandwidth limiting and statistics.
 
-		Added an additional example pre action script
-		which simply reports the disk usage of the 
-		backup destination disk.	
+	Added an additional example pre action script
+	which simply reports the disk usage of the 
+	backup destination disk.	
 
-		Added an option to the configuration file which
-		allows disabling of the email reporting system.
+	Added an option to the configuration file which
+	allows disabling of the email reporting system.
 
-		Added an additional example pre action script
-		which will inspect the log and determine the
-		start time of the most recent successful 
-		backup. If the start time is less than the
-		time specified within the script then backup
-		will be aborted. If the time is greater than
-		that mentioned in the script then the backup
-		will continue.
+	Added an additional example pre action script
+	which will inspect the log and determine the
+	start time of the most recent successful 
+	backup. If the start time is less than the
+	time specified within the script then backup
+	will be aborted. If the time is greater than
+	that mentioned in the script then the backup
+	will continue.
   
-		Added an additional example pre action script
-		which provides the ability to perform a check
-		regarding the percentage usage of the
-		destination disk.
+	Added an additional example pre action script
+	which provides the ability to perform a check
+	regarding the percentage usage of the
+	destination disk.
 
-		Added an additional example post action script
-		which provides basic template for reporting
-		relating to the differences between snapshot
-		disk utilization.
+	Added an additional example post action script
+	which provides basic template for reporting
+	relating to the differences between snapshot
+	disk utilisation.
 
-		Added in the first initialization script
-		which simplifies the setup of backups to disk
-		images by generating the pre and post actions
-		relating to the mounting and un-mounting
-		of the specified disk image. This is still
-		experimental feature.
+	Added in the first initialisation script
+	which simplifies the setup of backups to disk
+	images by generating the pre and post actions
+	relating to the mounting and un-mounting
+	of the specified disk image. This is still
+	experimental feature.
 
-		Basic initialization script system implemented.
-		Paving the way for more complex initialization
-		scripts in the future.
+	Basic initialisation script system implemented.
+	Paving the way for more complex initialisation
+	scripts in the future.
 
-		Additional options added to the example
-		pre-action script for reporting and 
-		logging system and backup disk usage.
+	Additional options added to the example
+	pre-action script for reporting and 
+	logging system and backup disk usage.
 
-		Updated the example pre-action script for
-		detecting if a disk image is mounted on 
-		Mac OS X systems. If the disk image has
-		been remotely mounted this should now
-		be detected.
+	Updated the example pre-action script for
+	detecting if a disk image is mounted on 
+	Mac OS X systems. If the disk image has
+	been remotely mounted this should now
+	be detected.
 
-		Added configuration options for reporting of
-        of incomplete backups required time.
+	Added configuration options for reporting of
+        	of incomplete backups required time.
 
-		Added configuration options for reporting of
-        timing relating to failed backups required 
-		time.
+	Added configuration options for reporting of
+        	timing relating to failed backups required 
+	time.
 
-		Added configuration options for reporting of
-        snapshot creation required time.
+	Added configuration options for reporting of
+        	snapshot creation required time.
 
-		Added configuration options for reporting of
-        incomplete snapshot creation required time.
+	Added configuration options for reporting of
+        	incomplete snapshot creation required time.
 				
-		Added options for the rsync --hard-link to the
-		LBackup configuration file. When enabled, this
-		allows preserviation of hard links within the
-		source tree.
+	Added options for the rsync --hard-link to the
+	LBackup configuration file. When enabled, this
+	allows preservation of hard links within the
+	source tree.
 		
-		Added an example post action script which
-		which may be used to generate a link from
-		the backup destination directory to the 
-		backup configuration directory.
+	Added an example post action script which
+	which may be used to generate a link from
+	the backup destination directory to the 
+	backup configuration directory.
 
-		Improved backup set reliability with 
-		additional checks relating to the rotation
-		of the backup snapshots. 
+	Improved backup set reliability with 
+	additional checks relating to the rotation
+	of the backup snapshots. 
 
-		Resolved an issue relating to md5 within some
-                of the mail templates on LINUX systems.
+	Resolved an issue relating to md5 within some
+        of the mail templates on LINUX systems.
+
+	Added configuration option to ignore vanished
+	files as reported by rsync and as such consider
+        that the backup is successful, and as such
+        proceed with backup set rotation.
 		
-		Various minor bug fixes.
+	Various minor bug fixes.
 
 
-	  Bugs : 
+	Bugs : 
             	All other bugs From 0.9.8r4 remain.
 
 
 
-	Version 0.9.8r4
+     Version 0.9.8r4
   
-  		Added functionality (disabled by default) to remove
-  		old archived rsync session log files. This must be
-  		enabled within the post-action script.
+  	Added functionality (disabled by default) to remove
+  	old archived rsync session log files. This must be
+  	enabled within the post-action script.
   
-	  	Provided basic LINUX server support to the example 
-		sparse-bundle synchronization post action script.
+	Provided basic LINUX server support to the example 
+	sparse-bundle synchronization post action script.
 
-		Basic man page is now included. This man page will
+	Basic man page is now included. This man page will
         	requires a great deal more work to make it useful.
 
-		Minor improvements to post action subsystem.
+	Minor improvements to post action subsystem.
 		
-		Added an option for disabling ACL preservation on
-		darwin with custom rsync v3 installed.
+	Added an option for disabling ACL preservation on
+	darwin with custom rsync v3 installed.
 		
-		Various other minor improvements.
+	Various other minor improvements.
 
-		Added a basic example post action script which reports 
-                the backup completion time.
+	Added a basic example post action script which reports 
+        the backup completion time.
 
-		Moved the configuration directory to /etc/lbackup
+	Moved the configuration directory to /etc/lbackup
 		
-		Added options for the rsync --checksum to the
-		LBackup configuration file.
+	Added options for the rsync --checksum to the
+	LBackup configuration file.
 		
-		Added options for the rsync --numeric-ids to the
-		LBackup configuration file.
+	Added options for the rsync --numeric-ids to the
+	LBackup configuration file.
 
-		Added the ability to pass the -s flag to the lcd 
-	   	command so that it may be used within a script.
+	Added the ability to pass the -s flag to the lcd 
+	command so that it may be used within a script.
 		
-		Various minor bug fixes.
+	Various minor bug fixes.
 
 
-	  Bugs : 
+	Bugs : 
             	All other bugs From 0.9.8r3 remain.
 
 
 
-	Version 0.9.8r3  
+     Version 0.9.8r3  
 
-		Includes a post action which makes archiving of the sync
-		session logs easy. If enabled this log may be used as a
-	 	trip wire. It is possible to compare session logs to see
-		exactly which files in your backup have been modified,
-		added or deleted.
+	Includes a post action which makes archiving of the sync
+	session logs easy. If enabled this log may be used as a
+	trip wire. It is possible to compare session logs to see
+	exactly which files in your backup have been modified,
+	added or deleted.
 
         	Initial implementation of custom per backup configuration
-	        mail template system.
+	mail template system.
 
-		Improvements to reliability of backups by adding a 
-		snap shot integrity check prior to commencing backup
-	 	snapshot rotations.
+	Improvements to reliability of backups by adding a 
+	snap shot integrity check prior to commencing backup
+	snapshot rotations.
 
-		Added errors if the specified custom version of rsync was 
-		not able to be located on the system when darwin checks are
-		enabled.
+	Added errors if the specified custom version of rsync was 
+	not able to be located on the system when darwin checks are
+	enabled.
 
-		Added warnings for unmanaged sections within a backup set.
+	Added warnings for unmanaged sections within a backup set.
 
-		Added hard link support even when number of rotations
-		is set configured to one rotation. Earlier version would
-		copy all data again across the network.
+	Added hard link support even when number of rotations
+	is set configured to one rotation. Earlier version would
+	copy all data again across the network.
 
-		Added integer input checking for number of rotations.
+	Added integer input checking for number of rotations.
 
-		Resolved issue relating to the exit value always being set
-		to zero even when an error occurred during the backup. This
-		problem was caused by an error in the the backup lock exit
-		trap procedure.
+	Resolved issue relating to the exit value always being set
+	to zero even when an error occurred during the backup. This
+	problem was caused by an error in the the backup lock exit
+	trap procedure.
 
-		Implemented basic checks before sending mail that the 
-		destination address has actually been modified.
+	Implemented basic checks before sending mail that the 
+	destination address has actually been modified.
 
-		Added more pre and post action scripts.
+	Added more pre and post action scripts.
 
-		Various minor improvements.
+	Various minor improvements.
 
-		Minor bug fixes.
+	Minor bug fixes.
 
-	 Bugs : 
+	Bugs : 
             	All other bugs From 0.9.8r2 remain.
 
 
-	Version 0.9.8r2       		
+     Version 0.9.8r2       		
 
-		Added a example post action script which will maintain a 
-		link to the backup destination directory within the backup
-		configuration directory.
+	Added a example post action script which will maintain a 
+	link to the backup destination directory within the backup		
+	configuration directory.
 
-		The new version of the example post-action script for 
-		generating time based links script now generates relative
-		links by default. This makes it easier to migrate backup 
-		sets between storage devices or directories.
+	The new version of the example post-action script for 
+	generating time based links script now generates relative
+	links by default. This makes it easier to migrate backup 
+	sets between storage devices or directories.
 
-		Resolved issue with Mac OS 10.3.9 installer.
+	Resolved issue with Mac OS 10.3.9 installer.
 		
-		Mac OS X download .dmg size reduced from >500Kb to <200Kb.
+	Mac OS X download .dmg size reduced from >500Kb to <200Kb.
 
-		Basic checks implemented for backup destination and
-		source availability for local non-network based backups.
+	Basic checks implemented for backup destination and
+	source availability for local non-network based backups.
 
-		Added checks for destination volume permissions when
- 		executing on Darwin.
+	Added checks for destination volume permissions when
+ 	executing on Darwin.
 
-		Fixed the sender address of emails. Now the 
-		configuration file is honored. 
+	Fixed the sender address of emails. Now the 
+	configuration file is honoured. 
 
-		Resolved an issue with the x-sender header. It is now 
-		set to the sender address.
+	Resolved an issue with the x-sender header. It is now 
+	set to the sender address.
 
-		Improved email in certain error conditions.
+	Improved email in certain error conditions.
 
-		Improved lock file removal with regards to certain 
-		error conditions.
+	Improved lock file removal with regards to certain 
+	error conditions.
 
-		Improved post action scripts reliability
+	Improved post action scripts reliability
 
-		Added option in configuration file to allow post action 
-		scripts to run even on backup error.
+	Added option in configuration file to allow post action 
+	scripts to run even on backup error.
 
-		Resolved issue relating to post script actions running,
-		even if the atomic swap failed. This is now correctly 
-		implemented and will depend upon your post-action
-	 	configuration settings.
+	Resolved issue relating to post script actions running,
+	even if the atomic swap failed. This is now correctly 
+	implemented and will depend upon your post-action
+	configuration settings.
 
-		Added a configuration option to allow lmail to run even if
-		the backup was completed successful.
+	Added a configuration option to allow lmail to run even if
+	the backup was completed successful.
 
-		Minor Bug fixes.
+	Minor Bug fixes.
 
-		Various other minor improvements to the install process.
+	Various other minor improvements to the install process.
 
-	 Bugs : 
-            	All other bugs From 0.9.8r1 Remain.
+	Bugs : 
+            All other bugs From 0.9.8r1 Remain.
 
 
 
-	Version 0.9.8r1
+     Version 0.9.8r1
        	
-		Added the lcd command.
+	Added the lcd command.
 		
-		Set more appropriate default settings.
+	Set more appropriate default settings.
 
-		Basic backup in progress locking system implemented.
+	Basic backup in progress locking system implemented.
 		
-		Additional parameters are now provided to the pre 
-		and post hook scripts.
+	Additional parameters are now provided to the pre 
+	and post hook scripts.
 		
-		Added additional logging facilities.
+	Added additional logging facilities.
 		
-		Bundled post script for maintaining a directory of time
-		based symbolic backup links.
+	Bundled post script for maintaining a directory of time
+	based symbolic backup links.
 
-		Various minor bug fixes and spelling mistakes fixed 
-		(there are still many spelling issues)
+	Various minor bug fixes and spelling mistakes fixed 
+	(there are still many spelling issues)
                    
         Bugs : 
-            All Bugs From 0.9.8q9 Remain.
+           	 All Bugs From 0.9.8q9 Remain.
 
 
 
-	Version 0.9.8q9
+     Version 0.9.8q9
        	
-		Minor changes to the example backup configuration.
+	Minor changes to the example backup configuration.
 		
-		Improved reliability of backups which are not being run 
-		as root.
+	Improved reliability of backups which are not being run 
+	as root.
                    
         Bugs : 
-            All Bugs From 0.9.8q8 Remain.
+            	All Bugs From 0.9.8q8 Remain.
 
 
 
-	Version 0.9.8q8
+     Version 0.9.8q8
 
        	Bug fix for dealing with custom SSH rsync paths.
        	
-		Minor changes to the example backup configuration.
+	Minor changes to the example backup configuration.
        	
        	Various fixes for SSH wrapper.
                    
         Bugs : 
-            All Bugs From 0.9.8q7 Remain.
+            	All Bugs From 0.9.8q7 Remain.
 
 
 
-	Version 0.9.8q7
+     Version 0.9.8q7
 
        	Improved example backup action scripts.
        	
@@ -300,11 +305,11 @@
        	for email reporting within the mail configuration file.
                    
         Bugs : 
-            All Bugs From 0.9.8q6 Remain.
+            	All Bugs From 0.9.8q6 Remain.
 
 
 
-	Version 0.9.8q6
+     Version 0.9.8q6
 
        	LINUX Backup to OS X improvements.
                    
@@ -313,53 +318,53 @@
 
 
 
-	Version 0.9.8q5
+     Version 0.9.8q5
 
         	New options to allow the use of OS X bundled version
-	 	of rsync for network backups.
+	 of rsync for network backups.
 		
-		Automatic compatibility checking enabled for OS X bundled 
-		version of rsync. 
+	Automatic compatibility checking enabled for OS X bundled 
+	version of rsync. 
 		
-		Ground work for auto detection of remote OS completed.
+	Ground work for auto detection of remote OS completed.
 		
-		Minor code clean up.
+	Minor code clean up.
 		
-		Minor bug fixes.
+	Minor bug fixes.
                    
         Bugs : 
-            All Bugs From 0.9.8q4 Remain.
+            	All Bugs From 0.9.8q4 Remain.
 
 
 
-	Version 0.9.8q4
+   Version 0.9.8q4
 
-        Major Restrictions added to the Example SSH Wrapper
+        	Major Restrictions added to the Example SSH Wrapper
                     
         Bugs : 
-            All Bugs From 0.9.8q3 Remain.
+            	All Bugs From 0.9.8q3 Remain.
 
 
 
-	Version 0.9.8q3
+   Version 0.9.8q3
 
-        Added support for a new configuration file options. 
+        	Added support for a new configuration file options. 
 		
-		Greater control over the rsync options for backups
-		using SSH as the transport protocol.
+	Greater control over the rsync options for backups
+	using SSH as the transport protocol.
 		
-		Ability to skip the local system checks.
+	Ability to skip the local system checks.
                     
         Bugs : 
-            All Bugs From 0.9.8q Remain.
+            	All Bugs From 0.9.8q Remain.
 
 
     Version 0.9.8q
         
-            Added support for a new configuration file option,
-            allowing the continuation of failed backups. In order
-            to use this option LBackup version 0.9.8q or later is
-            required. 
+            	Added support for a new configuration file option,
+            	allowing the continuation of failed backups. In order
+            	to use this option LBackup version 0.9.8q or later is
+            	required. 
                         
             Bugs : 
                 All Bugs From 0.9.8p Remain.
