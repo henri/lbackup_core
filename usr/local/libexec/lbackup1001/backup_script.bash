@@ -904,8 +904,27 @@ if [ "$ignore_backup_lock" == "NO" ] ; then
         # Test the ability to write the lock file and report an error if there was one.
         touch "$backup_lock_file_absolute_path" 2>/dev/null
         if [ $? != 0 ] ; then
-                echo "WARNING! : Unable to generate backup lock file : $backup_lock_file_absolute_path" | tee -ai $logFile  
-        fi
+                echo "ERROR! : Unable to generate backup lock file : $backup_lock_file_absolute_path" | tee -ai $logFile  
+				echo "         Backup Cancelled." | tee -ai $logFile
+				exit -1
+		else
+			# Save the backup start time since epock into line 1 of the lock file
+			echo "Process start time (since epoch in seconds) : ${epoch_successful_backup_start}" > "{$backup_lock_file_absolute_path}"	
+			if [ $? != 0 ] ; then
+				echo "ERROR! : Unable to load backup start time into lock file : $backup_lock_file_absolute_path" | tee -ai $logFile  	
+				echo "         Backup Cancelled." | tee -ai $logFile
+				rm -f "$backup_lock_file_absolute_path"
+				exit -1
+			fi
+			# Save the PID into line 2 of the lock file
+			echo "Porcess PID : ${?}" >> "{$backup_lock_file_absolute_path}"	
+			if [ $? != 0 ] ; then
+				echo "ERROR! : Unable to load PID into lock file : $backup_lock_file_absolute_path". | tee -ai $logFile  	
+				echo "         Backup Cancelled." | tee -ai $logFile
+				rm -f "$backup_lock_file_absolute_path"
+				exit -1
+			fi
+		fi
         
         # Set a trap so that if the backup is unexpectedly exited the lock file will be removed.
         #
@@ -913,9 +932,7 @@ if [ "$ignore_backup_lock" == "NO" ] ; then
         #         To revert to the original behavior add an "exit 0" command within the trap. This will insure 
         #         that exit 0 will be returned. This note will be handy if you have such a requirement.
         #
-        trap "{ sleep 0.5 ;rm -f \"$backup_lock_file_absolute_path\"; }" EXIT
-
-      
+        trap "{ sleep 0.5 ;rm -f \"$backup_lock_file_absolute_path\"; }" EXIT      
 
 else
         # Skip backup lock file check notification not written to the log file on purpose (for this version).
