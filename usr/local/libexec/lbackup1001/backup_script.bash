@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##            Version 0.9.8r5-alpha12           ##
+##            Version 0.9.8r5-alpha13           ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -909,7 +909,7 @@ if [ "$ignore_backup_lock" == "NO" ] ; then
 				exit -1
 		else
 			# Save the backup start time since epock into line 1 of the lock file
-			echo "Process start time (since epoch in seconds) : ${epoch_successful_backup_start}" > "{$backup_lock_file_absolute_path}"	
+			echo "Process start time (seconds since epoch) : ${epoch_successful_backup_start}" >> "${backup_lock_file_absolute_path}"	
 			if [ $? != 0 ] ; then
 				echo "ERROR! : Unable to load backup start time into lock file : $backup_lock_file_absolute_path" | tee -ai $logFile  	
 				echo "         Backup Cancelled." | tee -ai $logFile
@@ -917,9 +917,9 @@ if [ "$ignore_backup_lock" == "NO" ] ; then
 				exit -1
 			fi
 			# Save the PID into line 2 of the lock file
-			echo "Porcess PID : ${?}" >> "{$backup_lock_file_absolute_path}"	
+			echo "Porcess PID : ${?}" >> "${backup_lock_file_absolute_path}"	
 			if [ $? != 0 ] ; then
-				echo "ERROR! : Unable to load PID into lock file : $backup_lock_file_absolute_path". | tee -ai $logFile  	
+				echo "ERROR! : Unable to load PID into lock file : $backup_lock_file_absolute_path" | tee -ai $logFile  	
 				echo "         Backup Cancelled." | tee -ai $logFile
 				rm -f "$backup_lock_file_absolute_path"
 				exit -1
