@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##            Version 0.9.8r5-alpha11           ##
+##            Version 0.9.8r5-alpha12           ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -363,14 +363,14 @@ function make_seconds_human_readable {
 	# This function will accept an argument of seconds and convert this to human reable output - the return value is stored in a varible.
 	difference_in_seconds="$1"
 	less_than_one_second_string=""
-	time_to_delete_days=`echo "scale=0 ; $difference_in_seconds / 86400" | bc -l`
-	time_to_delete_hours=`echo "scale=0 ; ($difference_in_seconds / 3600) - ($time_to_delete_days * 24)"  | bc -l `
-	time_to_delete_minutes=`echo "scale=0 ; ($difference_in_seconds / 60) - ($time_to_delete_days * 1440) - ($time_to_delete_hours * 60)" | bc -l`
-	time_to_delete_seconds=`echo "scale=0 ; $difference_in_seconds % 60" | bc -l`
-    if [ ${time_to_delete_days} == 0 ] && [ ${time_to_delete_hours} == 0 ] && [ $time_to_delete_minutes == 0 ] && [ ${time_to_delete_seconds} == 0 ] ; then
+	time_to_human_days=`echo "scale=0 ; $difference_in_seconds / 86400" | bc -l`
+	time_to_human_hours=`echo "scale=0 ; ($difference_in_seconds / 3600) - ($time_to_human_days * 24)"  | bc -l `
+	time_to_human_minutes=`echo "scale=0 ; ($difference_in_seconds / 60) - ($time_to_human_days * 1440) - ($time_to_human_hours * 60)" | bc -l`
+	time_to_human_seconds=`echo "scale=0 ; $difference_in_seconds % 60" | bc -l`
+    if [ ${time_to_human_days} == 0 ] && [ ${time_to_human_hours} == 0 ] && [ $time_to_human_minutes == 0 ] && [ ${time_to_human_seconds} == 0 ] ; then
         less_than_one_second_string=" (less than one second)"
     fi 
-	return_value_from_make_seconds_human_readable="${time_to_delete_days} days, ${time_to_delete_hours} hours, ${time_to_delete_minutes} minutes, ${time_to_delete_seconds} seconds${less_than_one_second_string}"
+	return_value_from_make_seconds_human_readable="${time_to_human_days} days, ${time_to_human_hours} hours, ${time_to_human_minutes} minutes, ${time_to_human_seconds} seconds${less_than_one_second_string}"
 }
 
 
@@ -738,6 +738,21 @@ epoch_before_rsync_run=""
 epoch_after_rsync_run=""
 total_time_required_for_snapshot_in_seconds=""
 
+# Time reporting : overall successful backup
+epoch_successful_backup_start=""
+epoch_successful_backup_finished=""
+total_time_required_for_successful_backup_in_seconds=""
+ 
+# # Time reporting : pre-action scripts
+# epoch_before_pre-action_scripts=""
+# epoch_after_pre-action_scripts=""
+# total_time_required_for_pre-action_scripts=""
+# 
+# # Time reporting : post-action scripts
+# epoch_before_post-action_scripts=""
+# epoch_after_post-action_scripts=""
+# total_time_required_for_post-action_scripts=""
+
 # Backup Results
 backupResult=""
 newBackupResult=""
@@ -867,8 +882,10 @@ fi
 ##  Preflight Check   ##
 ########################
 
-# update logfile
+# start total backup timer running
+epoch_successful_backup_start=`date "+%s"`
 
+# update logfile
 echo "##################" >> $logFile
 echo `date` >> $logFile
 echo "" >> $logFile
@@ -1912,11 +1929,21 @@ perform_post_action_scripts
 
 # Report if the Backup was Sccessfull.
 if [ "${backup_status}" == "SUCCESS" ] ; then 
+	epoch_successful_backup_finished=`date "+%s"`
+    total_time_required_for_successful_backup_in_seconds=`echo "${epoch_successful_backup_finished} - ${epoch_successful_backup_start}" | bc -l`
+    return_value_from_make_seconds_human_readable=""
+    if [ "${total_time_required_for_successful_backup_in_seconds}" == "" ] ; then
+        echo "WARNING! : Unable to calculate the total time required for sucesfull backup." | tee -ai $logFile
+    else
+		# Note : Time Elapsed is only sent to the log file.
+		#        Human readable output could be loaded prior to this to the log and standard output if required.
+		echo "Time elapsed in seconds : ${total_time_required_for_successful_backup_in_seconds}" >> $logFile
+	fi
 	echo "Backup Completed Successfully" | tee -ai $logFile
 fi
 
 
-
+ 
 
 ## Close Log File
 echo "" >> $logFile
