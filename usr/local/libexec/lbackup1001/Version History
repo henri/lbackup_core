@@ -96,6 +96,12 @@
 	files as reported by rsync and as such consider
         that the backup is successful, and as such
         proceed with backup set rotation.
+
+	Updates to the handling of the lock file. Process
+        information is now stored within the lock file.
+        
+	Number of seconds for a successful backup is now
+	saved to the log file for reporting purposes.
 		
 	Various minor bug fixes.
 
