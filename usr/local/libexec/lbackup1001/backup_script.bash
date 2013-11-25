@@ -917,7 +917,7 @@ if [ "$ignore_backup_lock" == "NO" ] ; then
 				exit -1
 			fi
 			# Save the PID into line 2 of the lock file
-			echo "Porcess PID : ${?}" >> "${backup_lock_file_absolute_path}"	
+			echo "Process PID : ${$}" >> "${backup_lock_file_absolute_path}"	
 			if [ $? != 0 ] ; then
 				echo "ERROR! : Unable to load PID into lock file : $backup_lock_file_absolute_path" | tee -ai $logFile  	
 				echo "         Backup Cancelled." | tee -ai $logFile
