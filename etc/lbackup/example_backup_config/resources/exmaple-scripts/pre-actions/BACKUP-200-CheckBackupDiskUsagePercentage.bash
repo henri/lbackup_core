@@ -10,7 +10,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##  Ensure Disk Usage is Bleow a Set Percentage ##
 ##      	         (C)2008                    ##
 ##						                        ##
-##	              Version 0.0.4 	            ##
+##	              Version 0.0.5 	            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -71,6 +71,7 @@ fi
 
 ## Functions 
 function calculate_disk_usage_for_backup_destination_volume {
+	# backupDestVolume_diskusage_percentage=`df -h | awk -v volume="${backupDestVolume}" -F " /" '{  if ("/"$2 == volume) print $0 }' | awk '{print $5}' | awk -F "%" '{print $1}'`
     backupDestVolume_diskusage_percentage=`df -h "${backupDestVolume}" | tail -n 1 | awk '{print $5}' | awk -F "%" '{print $1}'`
     if [ $? != 0 ] ; then
         echo "    ERROR! : Unable to calculate percentage disk usage on the backup destination volume." | tee -ai $logFile
