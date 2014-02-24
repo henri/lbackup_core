@@ -9,7 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##	          EJECT DISK IMAGE VOLUME		    ##
 ##      		     (C)2005		            ##
 ##						                        ##
-##		          Version 0.0.8 	            ##
+##		          Version 0.0.9 	            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -79,7 +79,7 @@ function unmount_volumes {
                 fi
         else
             # Use hdiutil to eject the disk image
-            hdiutil detach "/Volumes/${volume_to_unmount}"
+            hdiutil detach "/Volumes/${volume_to_unmount}" > /dev/null
             hdiutil_exit=$?
             if [ ${hdiutil_exit} != ${SCRIPT_SUCCESS} ] ; then
                 exit ${hdiutil_exit}
