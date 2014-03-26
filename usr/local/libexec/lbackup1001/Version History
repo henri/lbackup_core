@@ -1,7 +1,7 @@
 
 
     LBACKUP - VERSION HISTORY 
-    ©2001-2013 ALL RIGHTS RESERVED - LUCID INFORMATION SYSTEMS
+    ©2001-2014 ALL RIGHTS RESERVED - LUCID INFORMATION SYSTEMS
     www.lucidsystems.org
 
     -----------------------------------------------------
@@ -10,6 +10,10 @@
 
 
      Version 0.9.8r5
+
+	Improved reporting of the backup configuration
+	script within the log file and also within
+	interactive mode.
 
 	Updated the Sync-Sparse-Image-to-Remote-Server
 	script to include additional options including

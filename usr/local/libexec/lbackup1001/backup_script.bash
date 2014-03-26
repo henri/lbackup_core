@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##            Version 0.9.8r5-alpha14           ##
+##            Version 0.9.8r5-alpha15           ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -512,13 +512,15 @@ report_report_removal_time_for_incomplete_backup_seconds="NO"
 ##      Load Configuration      ##
 ##################################
 
-echo "Loading Backup Script Configuration Data..."
 
 # Absolute path to configuration script (passed in $1)
 quoted_absolute_path=$1; get_absolute_path
 export backupConfigurationFilePath="$quoted_absolute_path"
 # Absolute path to configuration folder
 export backupConfigurationFolderPath=`dirname "$backupConfigurationFilePath"`
+
+echo "$backupConfigurationFilePath" | tee -ai $logFile
+echo "Loading Backup Script Configuration Data..." | tee -ai $logFile
 
 # Check file specified exists and is a lbackup command file.
 if ! [ -f "$backupConfigurationFilePath" ] ; then 
