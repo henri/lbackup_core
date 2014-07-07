@@ -27,7 +27,7 @@ Instructions for installing directly from source are available from the followin
 Information relating to monitoring backups is availible from this URL : 
 <http://www.lbackup.org/monitoring_multiple_backup_logs>
 
-Information relating to monitoring storage systems which are used for backup : 
+Information relating to monitoring of storage systems which are used for backup : 
 <http://www.lbackup.org/monitoring_backup_storage>
 
 
