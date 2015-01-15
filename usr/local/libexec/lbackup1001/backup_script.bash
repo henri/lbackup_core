@@ -258,7 +258,7 @@ function confirm_backup_integraty {
             echo "         Before backup snapshot rotation begins, your backup set" | tee -ai $logFile
             echo "         snapshot sections must be in complete sequence." | tee -ai $logFile
             echo "         Backup set destination directory : ${backupDest}" | tee -ai $logFile
-			echo "         Frist consitancy error detected in Section.${first_integrety_issue_detected}" | tee -ai $logFile
+			echo "         Frist integrity error detected in Section.${first_integrety_issue_detected}" | tee -ai $logFile
         	if [ "$post_actions_on_backup_error" == "YES" ] ; then
                 # We are going to run post actions even though the backup has failed
                 perform_post_action_scripts
