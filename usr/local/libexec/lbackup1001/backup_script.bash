@@ -38,6 +38,9 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##
 ## Any patches should be submitted to 
 ## http://wwww.lucidsystems.org
+## 
+## Git push requests may also be sent via GitHub
+## http://www.lbackup.org/source
 ##
 ## LBackup Official Home Page is
 ## http://www.lbackup.org
@@ -229,6 +232,7 @@ function confirm_backup_integraty {
     # confirm the integrity of the backup sets - no missing in the sequence
     # note : for the future revision configuration option - if the section.0 is missing this is not a problem other than disk space usage
     #        and as such, current_set_section_num could be set to start at 1 rather than 0 with an option.
+	first_integrety_issue_detected=""
     current_set_section_num=0
     largest_section_in_set=`ls "${backupDest}/" | grep -e "Section.[0-9]\+" | awk -F "." '{print $2}' | sort -n | awk '{ print $NF }' | tail -n 1`
     #  If there are no pre-existing sections then skip the checks.
@@ -238,7 +242,11 @@ function confirm_backup_integraty {
         while [ $current_set_section_num -le $largest_section_in_set ] ; do
         	if [ -e "${backupDest}/Section.${current_set_section_num}" ] ; then
         		((confirmed_section_num++))
-        	fi
+			else
+				if [ "${first_integrety_issue_detected}" == "" ] ; then
+					first_integrety_issue_detected="${current_set_section_num}"
+				fi
+			fi
         	((current_set_section_num++))
         done
         ((current_set_section_num--))
@@ -250,6 +258,7 @@ function confirm_backup_integraty {
             echo "         Before backup snapshot rotation begins, your backup set" | tee -ai $logFile
             echo "         snapshot sections must be in complete sequence." | tee -ai $logFile
             echo "         Backup set destination directory : ${backupDest}" | tee -ai $logFile
+			echo "         Frist consitancy error detected in Section.${first_integrety_issue_detected}" | tee -ai $logFile
         	if [ "$post_actions_on_backup_error" == "YES" ] ; then
                 # We are going to run post actions even though the backup has failed
                 perform_post_action_scripts
