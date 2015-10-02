@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##            Version 0.9.8r5-alpha15           ##
+##           Version 0.9.8r5-alpha16            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -1329,8 +1329,13 @@ if [ "$check_local_system" == "YES" ] ; then
                 backupDestVolume=`echo "$backupDest" | awk -F "/" '{ print $1"/"$2"/"$3}' `
                 if [ -d "${backupDestVolume}" ] ; then
                     # now lets run a check on that volume
-                    permissions_on_volume=`/usr/sbin/vsdbutil -c "${backupDestVolume}" | awk '{print $NF}' | awk -F "." '{print $1}'`
-                    if [ "${permissions_on_volume}" != "enabled" ] ; then
+                    
+					# disabled - due to depretiation of the vsdbutil command - will not work all the time / on all systems
+					# permissions_on_volume=`/usr/sbin/vsdbutil -c "${backupDestVolume}" | awk '{print $NF}' | awk -F "." '{print $1}'`
+					# if [ "${permissions_on_volume}" != "enabled" ] ; then
+					
+					permissions_on_volume=`/usr/sbin/diskutil info "${backupDestVolume}" | awk '/Owners:/ {print $2}'`
+                    if [ "${permissions_on_volume}" != "Enabled" ] ; then
                             # It is important to check for enabled. This is because if the permissions have not been explicitly
                             # set then the test will return the quoted volume rather than enabled or disabled.
                             echo "WARNING! : Permissions are disabled on backup destination volume." | tee -ai $logFile

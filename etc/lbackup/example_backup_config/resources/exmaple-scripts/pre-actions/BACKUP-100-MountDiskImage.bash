@@ -36,7 +36,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 #
 #         Some Calls in this script require that a user
 #         is logged currently logged in. If no one is
-#         logged in, then this script may behaive
+#         logged in, then this script may behave
 #         unexpectedly.
 #
 
