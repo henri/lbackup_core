@@ -8,7 +8,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##              LOCAL BACKUP SCRIPT             ##
 ##                    (C)2005                   ##
 ##                                              ##
-##           Version 0.9.8r5-alpha16            ##
+##           Version 0.9.8r5-alpha17            ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
