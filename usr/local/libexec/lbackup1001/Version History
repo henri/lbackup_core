@@ -107,6 +107,8 @@
 	Number of seconds for a successful backup is now
 	saved to the log file for reporting purposes.
 		
+	Support for Mac OS 10.11  (El Capitan).
+
 	Various minor bug fixes.
 
 
