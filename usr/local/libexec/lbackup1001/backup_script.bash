@@ -665,15 +665,22 @@ if [ "$numeric_ids_enabled" == "" ] ; then
 fi
 
 # Check if the bandwidth limiting has been set within the configuration file
-if [ "$bandwidth_limit" == "" ] ; then 
-    bandwidth_limit_enabled="$default_bandwidth_limit_enabled"
-	bandwidth_limit="$default_bandwidth_limit"
+bandwidth_limiting_validated="YES"
+if [ "${bandwidth_limit}" == "" ] ; then 
+    bandwidth_limit_enabled="${default_bandwidth_limit_enabled}"
+	bandwidth_limit="${default_bandwidth_limit}"
 else
-	if [ ${$bandwidth_limit} -gt 0 ] ; then
-		bandwidth_limit_enabled="YES"
-		bandwidth_limit=${$bandwidth_limit}
-	else
+	if [ "${bandwidth_limit}" == "0" ] ; then
 		bandwidth_limit_enabled="NO"
+		bandwidth_limit=${bandwidth_limit}
+	else
+		if [ ${bandwidth_limit} -gt 0 ] 2> /dev/null ; then
+			bandwidth_limit_enabled="YES"
+			bandwidth_limit=${bandwidth_limit}
+		else
+			bandwidth_limiting_validated="NO"
+			bandwidth_limit_enabled="NO"
+		fi
 	fi
 fi
 
@@ -1004,6 +1011,27 @@ if [ "${number_of_rotations_is_positive_integer}" != "YES" ] ; then
   send_mail_log
   exit -1
 fi
+
+
+# Check that if the bandwidth limit has been configured that it is an interger.
+if [ "${bandwidth_limiting_validated}" != "YES" ] ; then
+  # The bandwidth limit speciifed is not valid
+  # Report the problem to the log and send a mail off regarding the configuration issue.
+  echo "" | tee -ai $logFile
+  echo "CONFIGURATION ERROR! : The bandwidth limit specified is not valid."  | tee -ai $logFile
+  echo "                       This configuration directive is optional. Ensure that" | tee -ai $logFile
+  echo "                       if your backup configuration specifies a bandwidth limit" | tee -ai $logFile
+  echo "                       that it is a positive integer by using syntax listed below : "  | tee -ai $logFile
+  echo "                       bandwidth_limit=<positive integer>" | tee -ai $logFile
+  echo "" | tee -ai $logFile
+  echo "                       Below is an example which specifies 100 kilobytes per second :" | tee -ai $logFile
+  echo "                       bandwidth_limit=100" | tee -ai $logFile
+  echo "" | tee -ai $logFile
+  send_mail_log
+  exit -1
+fi
+
+
 
 # If the email subsystem has been disabled via the configuration file then att this information to the log.
 if [ "${disable_mailconfigpartner}" == "YES" ] ; then 
@@ -1687,6 +1715,8 @@ else
 		else
 			options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} ${preserve_source_hardlink_options} --stats -az ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"				
 		fi
+
+		echo $options
 
     else
 	   #nonSSH options
