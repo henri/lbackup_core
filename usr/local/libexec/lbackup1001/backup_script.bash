@@ -1681,7 +1681,7 @@ else
 
     	#options="--protocol=28 --rsync-path=${ssh_rsync_path_remote} --stats -az ${hardlink_option} -e ssh --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
 		
-		if [ "${bandwidth_limit_enabled}" == "YES" ; then
+		if [ "${bandwidth_limit_enabled}" == "YES" ] ; then
 			bandwidth_limit_options="--bandwidth_limit=${bandwidth_limit}"
 			options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} ${bandwidth_limit_options} ${preserve_source_hardlink_options} --stats -az ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
 		else
