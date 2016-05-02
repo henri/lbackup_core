@@ -9,6 +9,7 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 ##                    (C)2005                   ##
 ##                                              ##
 ##                Version 0.9.8r5               ##
+##               Alpha Release 018              ##
 ##                                              ##
 ##          Developed by Henri Shustak          ##
 ##                                              ##
@@ -483,6 +484,12 @@ backupConfigurationsVersionSet="NO"
 numeric_ids_enabled=""
 default_numeric_ids_enabled="NO"
 
+# bandwidth limiting (--bwlimit) configuration 
+bandwidth_limit_enabled=""
+default_bandwidth_limit_enabled="NO"
+bandwidth_limit=""
+default_bandwidth_limit=0
+
 # preservation of hard links (--hard-links) configuration
 hardlinks_enabled=""
 default_hardlinks_enabled="NO"
@@ -655,6 +662,19 @@ fi
 # Check if the numeric id preservation has been set within the configuration file
 if [ "$numeric_ids_enabled" == "" ] ; then 
     numeric_ids_enabled="$default_numeric_ids_enabled"
+fi
+
+# Check if the bandwidth limiting has been set within the configuration file
+if [ "$bandwidth_limit" == "" ] ; then 
+    bandwidth_limit_enabled="$default_bandwidth_limit_enabled"
+	bandwidth_limit="$default_bandwidth_limit"
+else
+	if [ ${$bandwidth_limit} -gt 0 ] ; then
+		bandwidth_limit_enabled="YES"
+		bandwidth_limit=${$bandwidth_limit}
+	else
+		bandwidth_limit_enabled="NO"
+	fi
 fi
 
 # Check if the preservation of hard links has been set within the configuration file
@@ -1660,7 +1680,13 @@ else
     	#SSH options
 
     	#options="--protocol=28 --rsync-path=${ssh_rsync_path_remote} --stats -az ${hardlink_option} -e ssh --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES"
-        options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} ${preserve_source_hardlink_options} --stats -az ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
+		
+		if [ "${bandwidth_limit_enabled}" == "YES" ; then
+			bandwidth_limit_options="--bandwidth_limit=${bandwidth_limit}"
+			options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} ${bandwidth_limit_options} ${preserve_source_hardlink_options} --stats -az ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"
+		else
+			options="--rsync-path=${ssh_rsync_path_remote} ${change_options} ${checksum_options} ${numeric_id_options} ${preserve_source_hardlink_options} --stats -az ${hardlink_option} --modify-window=20 --delete-excluded --exclude-from=$EXCLUDES -e ssh"				
+		fi
 
     else
 	   #nonSSH options
@@ -1705,14 +1731,11 @@ if [ "$createLinks" == "NO" ] ; then
 		#Source is accessed via SSH
 		#time /usr/local/bin/rsync $options $sshSource:"$backupSource" "$backupDestCRotTemp" | tee -ai $logFile
 		time ${ssh_rsync_path_local} $options $sshSource:"$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
-
-		
 	else
 		#Source is locally available	
 		#time /usr/local/bin/rsync $options "$backupSource" "$backupDestCRotTemp" | tee -ai $logFile
 	 	time ${rsync_path_local} $options "$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
-	fi
-	
+	fi	
 else
 	# Create Links
 	echo "Creating Links" | tee -ai $logFile
@@ -1721,14 +1744,11 @@ else
 		#Source is accessed via SSH
 		#time /usr/local/bin/rsync $options --link-dest="$linkDest" $sshSource:"$backupSource" "$backupDestCRotTemp" | tee -ai $logFile
 		time ${ssh_rsync_path_local} $options --link-dest="$linkDest" $sshSource:"$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
-
 	else
 		#Source is locally available	
 		#time /usr/local/bin/rsync $options --link-dest="$linkDest" "$backupSource" "$backupDestCRotTemp" | tee -ai $logFile
 		time ${rsync_path_local} $options --link-dest="$linkDest" "$backupSource" "$backupDestCRotTemp" 2>&1 | tee -ai $logFile
 	fi
-
-	
 fi
 
 if [ "${report_snapshot_time_human_readable}" == "YES" ] || [ "${report_snapshot_time_seconds}" == "YES" ] ; then
