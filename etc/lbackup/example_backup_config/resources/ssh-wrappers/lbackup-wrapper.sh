@@ -55,6 +55,9 @@
 # v1.6 Updated by   :   Henri Shustak, Lucid Information Systems
 # 				        Option for detecting the --delete option 
 #
+# v1.7 Updated by   :   Henri Shustak, Lucid Information Systems
+#                                        Added option for /usr/local/bin/rsync_3.2.2
+#
 # -------------------------------------------------------------------
 #
 #
@@ -108,7 +111,7 @@ echo -n $command[1] > $log
 #set command = (rsync --server --sender)
 
 # Make sure the original command is a valid LBackup command.
-if (( "$command[1]" != "/usr/local/bin/rsync_v3" ) && ( "$command[1]" != "/usr/local/bin/rsync" ) && ( "$command[1]" != "/usr/bin/rsync" ) && ( "$command[1]" != "/usr/sbin/growlout" ) && ( "$command[1]" != "/usr/sbin/sleepy" ) && ( "$command[1]" != "$lbackup_ssh_test_command" )) then
+if (( "$command[1]" != "/usr/local/bin/rsync_v3" ) && ( "$command[1]" != "/usr/local/bin/rsync" ) && ( "$command[1]" != "/usr/local/bin/rsync_3.2.2" ) && ( "$command[1]" != "/usr/bin/rsync" ) && ( "$command[1]" != "/usr/sbin/growlout" ) && ( "$command[1]" != "/usr/sbin/sleepy" ) && ( "$command[1]" != "$lbackup_ssh_test_command" )) then
     echo -n "command rejected : `cat ${log}`" | /usr/bin/logger -p 4 -t "lbackup_ssh_wapper[${current_user_id}]"
 	echo "ERROR! : Command execution denied."
 	echo "         This key only grants execution of LBackup commands."
@@ -118,8 +121,7 @@ endif
 # Ensure that --server is on the command line, to enforce running
 # rsync in server mode.
 
-if (( "$command[1]" == "/usr/local/bin/rsync" ) || ( "$command[1]" == "/usr/bin/rsync" ) || ( "$command[1]" == "/usr/local/bin/rsync_v3" )) then
-	
+if (( "$command[1]" == "/usr/local/bin/rsync" ) || ( "$command[1]" == "/usr/bin/rsync" ) || ( "$command[1]" == "/usr/local/bin/rsync_v3" ) || ( "$command[1]" == "/usr/local/bin/rsync_3.2.2" )) then
 	# Check for --server
 	set ok1 = false
 	foreach arg ($command)
