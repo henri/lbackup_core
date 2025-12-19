@@ -6,6 +6,10 @@
 ## Licensed Under the GNU GPL
 ## http://www.lucidsystems.org
 ##
+##
+## version history : 
+##      1.0 - intitial relase
+##      1.1 - updated for new versions of md5
 
 ##########################
 ##     Configuration    ##
@@ -51,7 +55,7 @@ else
     MD5=md5
 fi
 
-marker=`echo $reportDate | $MD5`
+marker=`echo $reportDate | $MD5 | awk '{print $1}'`
 boundary="mail-boundary-marker.""$marker"
 
 ##########################
