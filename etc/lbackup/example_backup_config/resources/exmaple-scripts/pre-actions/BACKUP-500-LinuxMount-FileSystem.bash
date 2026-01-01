@@ -3,6 +3,9 @@ PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 # this script will mount based on UUID if your system supports the following you will be presented with a list of UUIDs.
 # ls -l /dev/disk/by-uuid/
+#
+# alterativly if you have lsblk installed on your system : 
+# lsblk -o NAME,TYPE,FSTYPE,UUID,MOUNTPOINT
 
 mount_path="/mnt/mount-path"
 mount_uuid="17c1210c-8a88-42d6-b394-03f491415d5c"
