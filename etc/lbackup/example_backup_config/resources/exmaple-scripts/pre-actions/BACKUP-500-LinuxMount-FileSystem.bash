@@ -23,10 +23,14 @@ fi
 # mount all drives from /etc/fstab
 # /usr/bin/mount -a
 
-# mount single drive via UUID
-/usr/bin/mount -t ext4 UUID="${mount_uuid}" ${mount_path}
+/usr/bin/mountpoint ${mount_path} > /dev/null
 if [ $? != 0 ] ; then
-    exit_value=${SCRIPT_WARNING}
+    # not mounted so mount the mount point
+    /usr/bin/mount -t ext4 UUID="${mount_uuid}" ${mount_path}
+    if [ $? != 0 ] ; then
+        # note : exit value from mount with 32 means is already mounted
+        exit_value=${SCRIPT_WARNING}
+    fi
 fi
 
 exit ${exit_value}
